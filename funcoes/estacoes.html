@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estações do Ano</title>
+</head>
+<body>
+    <h1>Estações do Ano</h1>
+    <button onclick="verificar()">Ver estação do ano</button>
+    <h2></h2>
+    <script src="estacoes.js"></script>
+    <script>
+        function verificar(){
+            let mes = prompt("Informe o mês: ")
+            let dia = prompt("Informe o dia: ")
+            let h2 = document.getElementsByTagName("h2")[0]
+            h2.innerText = `A estação do ano no dia ${dia}/${mes} é ${estacao(dia,mes)}`
+        }
+    </script>
+</body>
+</html>
