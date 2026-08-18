@@ -1,0 +1,2992 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-tema="auto">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisão de Funções — INPR 911C</title>
+<style>
+/* ============================================================
+   TEMA / VARIÁVEIS
+   ============================================================ */
+:root{
+  --bg:#f4f6fb;
+  --bg2:#ffffff;
+  --bg3:#eef1f8;
+  --txt:#1b2033;
+  --txt2:#525b78;
+  --borda:#d9dfef;
+  --primaria:#4f46e5;
+  --primaria-forte:#3730a3;
+  --primaria-suave:#e8e7fd;
+  --acento:#0f9d8f;
+  --acento-suave:#dbf5f1;
+  --alerta:#d97706;
+  --alerta-suave:#fdf0da;
+  --erro:#d92d20;
+  --erro-suave:#fde8e6;
+  --certo:#15803d;
+  --certo-suave:#ddf5e3;
+  --rosa:#db2777;
+  --console-bg:#141a2e;
+  --console-txt:#c9f7d5;
+  --sombra:0 1px 2px rgba(20,26,46,.06), 0 8px 24px rgba(20,26,46,.07);
+  --raio:16px;
+  --raio-p:10px;
+  --mono:ui-monospace,"Cascadia Mono","Consolas","SFMono-Regular","Courier New",monospace;
+  --sans:ui-sans-serif,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-tema="claro"]){
+    --bg:#0e1220;
+    --bg2:#171d31;
+    --bg3:#1f2740;
+    --txt:#eef1fa;
+    --txt2:#a4aecb;
+    --borda:#2c3552;
+    --primaria:#8b85ff;
+    --primaria-forte:#b4afff;
+    --primaria-suave:#282council;
+    --primaria-suave:#262a4d;
+    --acento:#2dd4bf;
+    --acento-suave:#123b39;
+    --alerta:#fbbf24;
+    --alerta-suave:#3b2f10;
+    --erro:#fb7185;
+    --erro-suave:#3d1620;
+    --certo:#4ade80;
+    --certo-suave:#123420;
+    --rosa:#f472b6;
+    --console-bg:#080c18;
+    --console-txt:#8ef0ad;
+    --sombra:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+  }
+}
+:root[data-tema="escuro"]{
+  --bg:#0e1220;
+  --bg2:#171d31;
+  --bg3:#1f2740;
+  --txt:#eef1fa;
+  --txt2:#a4aecb;
+  --borda:#2c3552;
+  --primaria:#8b85ff;
+  --primaria-forte:#b4afff;
+  --primaria-suave:#262a4d;
+  --acento:#2dd4bf;
+  --acento-suave:#123b39;
+  --alerta:#fbbf24;
+  --alerta-suave:#3b2f10;
+  --erro:#fb7185;
+  --erro-suave:#3d1620;
+  --certo:#4ade80;
+  --certo-suave:#123420;
+  --rosa:#f472b6;
+  --console-bg:#080c18;
+  --console-txt:#8ef0ad;
+  --sombra:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--txt);
+  font-family:var(--sans);
+  font-size:17px;
+  line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+h1,h2,h3,h4{line-height:1.2;margin:0 0 .5em}
+h1{font-size:clamp(1.9rem,5vw,2.9rem);letter-spacing:-.02em}
+h2{font-size:clamp(1.4rem,3.6vw,2rem);letter-spacing:-.01em}
+h3{font-size:clamp(1.1rem,2.6vw,1.3rem)}
+p{margin:0 0 1em}
+a{color:var(--primaria)}
+code{font-family:var(--mono);font-size:.92em}
+:focus-visible{outline:3px solid var(--acento);outline-offset:3px;border-radius:6px}
+
+/* ============================================================
+   CABEÇALHO E NAVEGAÇÃO
+   ============================================================ */
+header.topo{
+  position:sticky;top:0;z-index:50;
+  background:color-mix(in srgb,var(--bg2) 88%,transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--borda);
+}
+.topo-linha{
+  max-width:1100px;margin:0 auto;padding:.6rem 1rem;
+  display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;
+}
+.marca{font-weight:800;letter-spacing:-.02em;font-size:1.05rem;display:flex;align-items:center;gap:.45rem}
+.marca .ponto{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--primaria),var(--acento));display:inline-block}
+.topo-espaco{flex:1}
+.btn-tema{
+  border:1px solid var(--borda);background:var(--bg3);color:var(--txt);
+  border-radius:999px;padding:.4rem .8rem;cursor:pointer;font:inherit;font-size:.85rem;
+  transition:transform .15s ease,background .2s ease;
+}
+.btn-tema:hover{transform:translateY(-1px)}
+
+nav.abas{max-width:1100px;margin:0 auto;padding:0 .5rem .55rem;display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:thin}
+nav.abas button{
+  flex:0 0 auto;border:1px solid transparent;background:transparent;color:var(--txt2);
+  font:inherit;font-size:.83rem;font-weight:600;padding:.42rem .7rem;border-radius:999px;
+  cursor:pointer;white-space:nowrap;transition:all .18s ease;
+}
+nav.abas button:hover{background:var(--bg3);color:var(--txt)}
+nav.abas button[aria-selected="true"]{background:var(--primaria);color:#fff;border-color:var(--primaria)}
+nav.abas button.visitada[aria-selected="false"]::before{content:"✓ ";color:var(--acento)}
+
+.barra-progresso{height:5px;background:var(--bg3);overflow:hidden}
+.barra-progresso > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primaria),var(--acento));transition:width .45s cubic-bezier(.2,.8,.2,1)}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+main{max-width:1100px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.secao{display:none;animation:entra .35s ease}
+.secao.ativa{display:block}
+@keyframes entra{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+
+.cartao{
+  background:var(--bg2);border:1px solid var(--borda);border-radius:var(--raio);
+  padding:1.2rem;margin:0 0 1.1rem;box-shadow:var(--sombra);
+}
+.grade{display:grid;gap:1rem}
+@media (min-width:760px){.grade.d2{grid-template-columns:1fr 1fr}.grade.d3{grid-template-columns:repeat(3,1fr)}}
+
+.etiqueta{
+  display:inline-block;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  padding:.22rem .6rem;border-radius:999px;background:var(--primaria-suave);color:var(--primaria-forte);margin-bottom:.7rem;
+}
+.dica{border-left:5px solid var(--acento);background:var(--acento-suave);padding:.8rem 1rem;border-radius:0 var(--raio-p) var(--raio-p) 0;margin:1rem 0}
+.aviso{border-left:5px solid var(--alerta);background:var(--alerta-suave);padding:.8rem 1rem;border-radius:0 var(--raio-p) var(--raio-p) 0;margin:1rem 0}
+.perigo{border-left:5px solid var(--erro);background:var(--erro-suave);padding:.8rem 1rem;border-radius:0 var(--raio-p) var(--raio-p) 0;margin:1rem 0}
+.dica p:last-child,.aviso p:last-child,.perigo p:last-child{margin-bottom:0}
+
+/* Código */
+pre.codigo{
+  background:var(--bg3);border:1px solid var(--borda);border-radius:var(--raio-p);
+  padding:.9rem 1rem;overflow-x:auto;font-family:var(--mono);font-size:.88rem;line-height:1.55;margin:0 0 .9rem;
+}
+pre.codigo .cm{color:var(--txt2);font-style:italic}
+
+/* Botões */
+.btn{
+  border:0;background:var(--primaria);color:#fff;font:inherit;font-weight:700;font-size:.9rem;
+  padding:.55rem 1.05rem;border-radius:999px;cursor:pointer;
+  transition:transform .15s ease,box-shadow .2s ease,filter .2s ease;
+  box-shadow:0 2px 10px rgba(79,70,229,.28);
+}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.btn:active{transform:translateY(0)}
+.btn.sec{background:var(--bg3);color:var(--txt);box-shadow:none;border:1px solid var(--borda)}
+.btn.ac{background:var(--acento);box-shadow:0 2px 10px rgba(15,157,143,.3)}
+.btn.rs{background:var(--rosa);box-shadow:0 2px 10px rgba(219,39,119,.28)}
+.btn.pq{font-size:.8rem;padding:.35rem .8rem}
+.linha-btns{display:flex;gap:.55rem;flex-wrap:wrap;align-items:center;margin:.6rem 0}
+
+/* Console simulado */
+.console{
+  background:var(--console-bg);color:var(--console-txt);font-family:var(--mono);font-size:.86rem;
+  border-radius:var(--raio-p);padding:.8rem 1rem;min-height:3.2rem;max-height:280px;overflow:auto;
+  white-space:pre-wrap;word-break:break-word;border:1px solid #0004;
+}
+.console:empty::before{content:"› a saída aparece aqui…";opacity:.45}
+.console .err{color:#ff9f9f}
+.console .info{color:#9fc7ff}
+
+/* Campos */
+label.campo{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;font-weight:700;color:var(--txt2)}
+input[type=text],input[type=number],select,textarea{
+  font:inherit;background:var(--bg2);color:var(--txt);border:1px solid var(--borda);
+  border-radius:var(--raio-p);padding:.5rem .7rem;width:100%;
+}
+textarea{font-family:var(--mono);font-size:.88rem;line-height:1.55;resize:vertical}
+.entradas{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:.7rem}
+
+.chamada{
+  font-family:var(--mono);font-size:1rem;background:var(--bg3);border:1px dashed var(--borda);
+  border-radius:var(--raio-p);padding:.6rem .8rem;margin:.4rem 0;overflow-x:auto;
+}
+.chamada b{color:var(--rosa)}
+.retorno{font-family:var(--mono);font-size:1.05rem;font-weight:700;color:var(--acento);padding:.2rem 0}
+
+.tabela{width:100%;border-collapse:collapse;font-size:.9rem;margin:.6rem 0}
+.tabela th,.tabela td{border:1px solid var(--borda);padding:.45rem .6rem;text-align:left}
+.tabela th{background:var(--bg3);font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
+.rolagem{overflow-x:auto}
+</style>
+<style>
+/* ============================================================
+   MÁQUINA DE SUCO
+   ============================================================ */
+.maquina-area{display:grid;gap:1rem;align-items:center}
+@media (min-width:760px){.maquina-area{grid-template-columns:1fr 1fr}}
+.maquina svg{width:100%;max-width:420px;height:auto;display:block;margin:0 auto}
+.engrenagem{transform-origin:center;animation:gira 4s linear infinite}
+.engrenagem.rapida{animation-duration:.6s}
+@keyframes gira{to{transform:rotate(360deg)}}
+.gota{opacity:0}
+.jorrando .gota{animation:cai 1s ease-in infinite}
+.gota:nth-of-type(2){animation-delay:.3s}
+.gota:nth-of-type(3){animation-delay:.6s}
+@keyframes cai{0%{opacity:0;transform:translateY(0)}15%{opacity:1}100%{opacity:0;transform:translateY(46px)}}
+.fluxo{display:flex;align-items:center;justify-content:center;gap:.5rem;flex-wrap:wrap;margin:.8rem 0;font-weight:700;font-size:.85rem}
+.fluxo span.caixa{background:var(--bg3);border:1px solid var(--borda);border-radius:999px;padding:.35rem .8rem}
+.fluxo span.seta{color:var(--acento);font-size:1.2rem}
+.copo-txt{font-size:1.05rem;font-weight:800;color:var(--acento)}
+
+/* ============================================================
+   ANATOMIA
+   ============================================================ */
+pre.anatomia{font-size:clamp(.9rem,2.4vw,1.15rem);line-height:2;background:var(--bg3);border:1px solid var(--borda);border-radius:var(--raio-p);padding:1rem 1.1rem;overflow-x:auto;font-family:var(--mono);margin:0 0 .8rem}
+.peca{border-radius:6px;padding:.12em .28em;cursor:pointer;transition:background .18s ease,color .18s ease,transform .18s ease;border-bottom:2px dotted var(--txt2)}
+.peca:hover,.peca.ativa{background:var(--primaria);color:#fff;transform:translateY(-2px);border-bottom-color:transparent}
+#anat-exp{min-height:6.5rem}
+#anat-exp h4{margin:0 0 .35rem;color:var(--primaria-forte)}
+
+/* ============================================================
+   ESCOPO
+   ============================================================ */
+.escopo-mundo{background:var(--bg3);border:2px dashed var(--borda);border-radius:var(--raio);padding:1rem;position:relative}
+.escopo-mundo > .rotulo{position:absolute;top:-.75rem;left:1rem;background:var(--bg2);border:1px solid var(--borda);border-radius:999px;padding:.1rem .6rem;font-size:.72rem;font-weight:800;letter-spacing:.05em}
+.escopo-func{background:var(--primaria-suave);border:2px solid var(--primaria);border-radius:var(--raio-p);padding:1rem;margin:1rem 0 .4rem;position:relative}
+.escopo-func > .rotulo{position:absolute;top:-.75rem;left:1rem;background:var(--primaria);color:#fff;border-radius:999px;padding:.1rem .6rem;font-size:.72rem;font-weight:800}
+.pilula{display:inline-block;font-family:var(--mono);font-size:.85rem;background:var(--bg2);border:1px solid var(--borda);border-radius:999px;padding:.25rem .7rem;margin:.2rem .3rem .2rem 0}
+.pilula.local{border-color:var(--primaria);color:var(--primaria-forte)}
+.pilula.global{border-color:var(--acento);color:var(--acento)}
+.tremendo{animation:treme .4s ease}
+@keyframes treme{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+.quiz-q{border:1px solid var(--borda);border-radius:var(--raio);padding:1rem;margin-bottom:1rem;background:var(--bg2)}
+.quiz-q > p.enunciado{font-weight:700;margin-bottom:.7rem}
+.alt{display:block;width:100%;text-align:left;font:inherit;font-size:.92rem;background:var(--bg3);border:1px solid var(--borda);
+     border-radius:var(--raio-p);padding:.55rem .8rem;margin-bottom:.45rem;cursor:pointer;transition:all .16s ease}
+.alt:hover:not(:disabled){border-color:var(--primaria);transform:translateX(3px)}
+.alt:disabled{cursor:default}
+.alt.certa{background:var(--certo-suave);border-color:var(--certo);color:var(--certo);font-weight:700}
+.alt.errada{background:var(--erro-suave);border-color:var(--erro);color:var(--erro);font-weight:700}
+.explica{margin-top:.5rem;font-size:.9rem;padding:.7rem .9rem;border-radius:var(--raio-p);background:var(--bg3);border-left:4px solid var(--primaria)}
+.placar{position:sticky;bottom:.7rem;background:var(--primaria);color:#fff;border-radius:999px;padding:.6rem 1.2rem;
+        font-weight:800;text-align:center;box-shadow:var(--sombra);display:flex;gap:1rem;justify-content:center;align-items:center;flex-wrap:wrap}
+
+/* ============================================================
+   TESTE DE MESA
+   ============================================================ */
+.linha-cod{display:block;padding:.05rem .5rem;border-radius:5px;font-family:var(--mono);font-size:.88rem;white-space:pre;transition:background .2s ease}
+.linha-cod.atual{background:var(--alerta-suave);box-shadow:inset 3px 0 0 var(--alerta);font-weight:700}
+.passo-desc{background:var(--bg3);border-radius:var(--raio-p);padding:.7rem .9rem;font-size:.9rem;min-height:3.2rem;margin:.6rem 0}
+.tabela input{padding:.3rem .45rem;font-family:var(--mono);font-size:.88rem;text-align:center}
+.tabela input.ok{background:var(--certo-suave);border-color:var(--certo);color:var(--certo);font-weight:700}
+.tabela input.nok{background:var(--erro-suave);border-color:var(--erro);color:var(--erro);font-weight:700}
+.pista{font-size:.8rem;color:var(--erro);display:block;margin-top:.2rem}
+.resultado-conf{font-weight:800;margin-top:.5rem}
+
+/* ============================================================
+   CAPA
+   ============================================================ */
+.capa{text-align:center;padding:2.5rem 1rem;background:
+   radial-gradient(1000px 400px at 50% -10%, var(--primaria-suave), transparent 70%);
+   border-radius:var(--raio)}
+.capa .selo{font-size:3.4rem;line-height:1;margin-bottom:.4rem;display:block;animation:flutua 3.5s ease-in-out infinite}
+@keyframes flutua{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.capa .sub{color:var(--txt2);font-size:1.05rem;max-width:620px;margin:0 auto 1.4rem}
+.creditos{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.6rem}
+.creditos span{background:var(--bg2);border:1px solid var(--borda);border-radius:999px;padding:.35rem .9rem;font-size:.85rem;font-weight:600}
+.roteiro{display:grid;gap:.6rem;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-top:1.6rem;text-align:left}
+.roteiro div{background:var(--bg2);border:1px solid var(--borda);border-radius:var(--raio-p);padding:.7rem .9rem;font-size:.88rem}
+.roteiro b{display:block;color:var(--primaria-forte)}
+
+/* Ficha do caderno */
+.ficha-cabecalho{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;border-bottom:2px solid var(--txt);padding-bottom:.6rem;margin-bottom:1rem}
+.ficha-linha-nome{margin:1rem 0;font-size:.95rem}
+.exerc{border:1px solid var(--borda);border-radius:var(--raio-p);padding:.9rem 1rem;margin-bottom:1rem;background:var(--bg2);break-inside:avoid}
+.exerc h4{margin:0 0 .5rem}
+.tabela.vazia td{height:2rem}
+.desafios{columns:2;column-gap:1.2rem}
+@media (max-width:700px){.desafios{columns:1}}
+.desafios li{break-inside:avoid;margin-bottom:.5rem}
+
+footer.rodape{border-top:1px solid var(--borda);margin-top:2rem;padding-top:1.2rem;color:var(--txt2);font-size:.9rem}
+
+/* ============================================================
+   GALERIA DE EXEMPLOS
+   ============================================================ */
+.filtros{display:flex;gap:.45rem;flex-wrap:wrap;margin:.8rem 0 1.2rem}
+.filtros button{border:1px solid var(--borda);background:var(--bg2);color:var(--txt2);font:inherit;font-size:.85rem;
+  font-weight:700;padding:.4rem .9rem;border-radius:999px;cursor:pointer;transition:all .18s ease}
+.filtros button:hover{border-color:var(--primaria);color:var(--txt)}
+.filtros button[aria-pressed="true"]{background:var(--primaria);color:#fff;border-color:var(--primaria)}
+.galeria{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.galeria .cartao{margin:0;display:flex;flex-direction:column}
+.galeria .cartao pre.codigo{flex:0 0 auto;font-size:.8rem}
+.tag-cat{font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .55rem;
+  border-radius:999px;background:var(--acento-suave);color:var(--acento);margin-left:.4rem;vertical-align:middle}
+.slider-linha{display:flex;align-items:center;gap:.6rem}
+.slider-linha input[type=range]{flex:1;accent-color:var(--primaria)}
+.slider-valor{font-family:var(--mono);font-weight:800;min-width:3.2ch;text-align:right;color:var(--primaria-forte)}
+.saida-mono{font-family:var(--mono);font-size:.9rem;white-space:pre-wrap;background:var(--console-bg);color:var(--console-txt);
+  border-radius:var(--raio-p);padding:.6rem .8rem;margin-top:.5rem;word-break:break-word}
+
+/* ============================================================
+   4 VERSÕES
+   ============================================================ */
+.versoes{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(208px,1fr))}
+.versao{border:2px solid var(--borda);border-radius:var(--raio);padding:.9rem;background:var(--bg2);display:flex;flex-direction:column}
+.versao.v1{border-color:var(--erro)}
+.versao.v2{border-color:var(--alerta)}
+.versao.v3{border-color:var(--rosa)}
+.versao.v4{border-color:var(--certo)}
+.versao h4{margin:0 0 .3rem;font-size:1rem}
+.versao pre.codigo{font-size:.78rem;margin-bottom:.5rem}
+.versao .veredito{font-size:.82rem;color:var(--txt2);margin-top:auto}
+.cel-oculta{color:var(--txt2);opacity:.5}
+.cel-revelada{animation:pisca .6s ease}
+@keyframes pisca{0%{background:var(--primaria-suave)}100%{background:transparent}}
+
+/* ============================================================
+   MINI-PROJETOS
+   ============================================================ */
+.diagrama{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;background:var(--bg3);border-radius:var(--raio-p);
+  padding:.7rem .8rem;margin:.7rem 0;font-family:var(--mono);font-size:.82rem}
+.no-func{border:2px solid var(--borda);background:var(--bg2);border-radius:999px;padding:.25rem .75rem;
+  transition:all .25s ease;white-space:nowrap}
+.no-func.aceso{background:var(--primaria);color:#fff;border-color:var(--primaria);transform:scale(1.08);
+  box-shadow:0 0 0 6px var(--primaria-suave)}
+.no-seta{color:var(--acento);font-weight:800}
+
+/* ============================================================
+   GALERIA DE ERROS (cartões vira-vira)
+   ============================================================ */
+.erros{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.vira{perspective:1400px}
+.vira-int{display:grid;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.3,.8,.3,1);height:100%}
+.vira.virado .vira-int{transform:rotateY(180deg)}
+.vira-face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--raio);
+  border:2px solid var(--borda);background:var(--bg2);padding:1rem;box-shadow:var(--sombra)}
+.vira-frente{border-color:var(--erro)}
+.vira-tras{transform:rotateY(180deg);border-color:var(--certo)}
+.vira-face h4{margin:0 0 .5rem;font-size:.98rem}
+.vira-face pre.codigo{font-size:.78rem;margin-bottom:.5rem}
+.saida-node{font-family:var(--mono);font-size:.8rem;background:var(--console-bg);color:var(--console-txt);
+  border-radius:8px;padding:.45rem .7rem;white-space:pre-wrap;margin:.3rem 0 .6rem}
+.saida-node b{color:#ffd48a}
+.porque{font-size:.85rem;color:var(--txt2)}
+
+/* ============================================================
+   IMPRESSÃO — imprime só a ficha do caderno
+   ============================================================ */
+@media print{
+  header.topo,nav.abas,.barra-progresso,.linha-btns,.btn,footer.rodape,.nao-imprime{display:none !important}
+  body{background:#fff;color:#000;font-size:12pt}
+  main{max-width:none;padding:0}
+  .secao{display:none !important}
+  .secao#sec-caderno{display:block !important}
+  .cartao,.exerc{box-shadow:none;border:1px solid #999;background:#fff;break-inside:avoid}
+  pre.codigo{background:#fff;border:1px solid #999}
+  .tabela th{background:#eee}
+  .tabela.vazia td{height:2.2em}
+  a{color:#000;text-decoration:none}
+  .so-impressao{display:block !important}
+}
+.so-impressao{display:none}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-linha">
+    <div class="marca"><span class="ponto"></span> Revisão de Funções</div>
+    <div class="topo-espaco"></div>
+    <button class="btn-tema" id="btnTema" aria-label="Alternar entre tema claro e escuro">🌙 Tema</button>
+  </div>
+  <nav class="abas" id="abas" role="tablist" aria-label="Seções da revisão"></nav>
+  <div class="barra-progresso" role="progressbar" aria-label="Progresso da revisão" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressoWrap"><i id="progresso"></i></div>
+</header>
+
+<main>
+
+<!-- ==========================================================
+     1. CAPA
+     ========================================================== -->
+<section class="secao ativa" id="sec-capa" role="tabpanel" aria-labelledby="aba-capa" data-titulo="Capa">
+  <div class="capa">
+    <span class="selo">🍹</span>
+    <h1>Revisão de Funções</h1>
+    <p class="sub">Tudo o que a gente viu sobre funções em JavaScript, num lugar só — para clicar, testar, errar sem medo e entender de verdade.</p>
+    <div class="creditos">
+      <span>💻 Introdução à Programação (INPR)</span>
+      <span>🎓 Turma 911C — 1º ano</span>
+      <span>🏫 IFAL — Campus Maceió</span>
+      <span>👨‍🏫 Prof. Augusto</span>
+    </div>
+    <button class="btn" id="btnComecar">Começar ➜</button>
+    <div class="roteiro">
+      <div><b>1 · Conceito</b> A metáfora da máquina de suco e a anatomia de uma função.</div>
+      <div><b>2 · Prática</b> Funções com e sem parâmetro, rodando de verdade no navegador.</div>
+      <div><b>3 · Armadilhas</b> Ordem dos argumentos, <code>return</code> × <code>console.log</code> e escopo.</div>
+      <div><b>4 · Treino</b> Playground, quiz, exercícios resolvidos e teste de mesa.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     2. O QUE É UMA FUNÇÃO
+     ========================================================== -->
+<section class="secao" id="sec-oque" role="tabpanel" aria-labelledby="aba-oque" data-titulo="O que é">
+  <span class="etiqueta">Conceito</span>
+  <h2>O que é uma função?</h2>
+  <p>Uma função é um <b>bloco de código com nome</b>. A gente escreve uma vez e manda executar quantas vezes quiser, só chamando pelo nome.</p>
+
+  <div class="cartao">
+    <h3>🍹 A máquina de suco</h3>
+    <p>Pensa numa máquina de suco: você <b>coloca uma fruta</b> (entrada), a máquina <b>bate</b> (processamento) e <b>sai o suco</b> (saída). Uma função é exatamente isso.</p>
+    <div class="fluxo">
+      <span class="caixa">🍊 Entrada (argumento)</span><span class="seta">➜</span>
+      <span class="caixa">⚙️ Processamento (corpo)</span><span class="seta">➜</span>
+      <span class="caixa">🥤 Saída (return)</span>
+    </div>
+
+    <div class="maquina-area">
+      <div class="maquina" id="maquina">
+        <svg viewBox="0 0 300 300" role="img" aria-label="Ilustração de uma máquina de suco com funil, engrenagens e um copo">
+          <!-- funil -->
+          <path d="M100 30 L200 30 L165 88 L135 88 Z" fill="var(--primaria-suave)" stroke="var(--primaria)" stroke-width="3" stroke-linejoin="round"/>
+          <!-- fruta caindo -->
+          <text id="frutaSvg" x="150" y="62" font-size="30" text-anchor="middle" dominant-baseline="middle">🍊</text>
+          <!-- corpo -->
+          <rect x="70" y="88" width="160" height="105" rx="18" fill="var(--bg3)" stroke="var(--primaria)" stroke-width="3"/>
+          <!-- engrenagens -->
+          <g class="engrenagem" id="eng1" style="transform-box:fill-box">
+            <circle cx="120" cy="140" r="26" fill="none" stroke="var(--acento)" stroke-width="7" stroke-dasharray="9 7"/>
+            <circle cx="120" cy="140" r="8" fill="var(--acento)"/>
+          </g>
+          <g class="engrenagem" id="eng2" style="transform-box:fill-box;animation-direction:reverse">
+            <circle cx="182" cy="152" r="19" fill="none" stroke="var(--primaria)" stroke-width="6" stroke-dasharray="8 6"/>
+            <circle cx="182" cy="152" r="6" fill="var(--primaria)"/>
+          </g>
+          <!-- bico -->
+          <rect x="140" y="193" width="20" height="18" rx="4" fill="var(--primaria)"/>
+          <!-- gotas -->
+          <g id="gotas">
+            <circle class="gota" cx="150" cy="215" r="5" fill="var(--alerta)"/>
+            <circle class="gota" cx="150" cy="215" r="5" fill="var(--alerta)"/>
+            <circle class="gota" cx="150" cy="215" r="5" fill="var(--alerta)"/>
+          </g>
+          <!-- copo -->
+          <path d="M120 260 L127 296 L173 296 L180 260 Z" fill="var(--alerta-suave)" stroke="var(--alerta)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M123 275 L177 275" stroke="var(--alerta)" stroke-width="8" stroke-linecap="round" opacity=".6"/>
+        </svg>
+      </div>
+      <div>
+        <label class="campo" for="selFruta">Escolha a fruta que entra na máquina (o argumento):
+          <select id="selFruta">
+            <option value="laranja">🍊 laranja</option>
+            <option value="morango">🍓 morango</option>
+            <option value="abacaxi">🍍 abacaxi</option>
+            <option value="uva">🍇 uva</option>
+            <option value="manga">🥭 manga</option>
+            <option value="limão">🍋 limão</option>
+          </select>
+        </label>
+        <pre class="codigo">function fazerSuco(fruta) {
+    return `Suco de ${fruta}`
+}</pre>
+        <div class="chamada" id="sucoChamada">fazerSuco(<b>"laranja"</b>)</div>
+        <p class="copo-txt" id="sucoSaida">🥤 "Suco de laranja"</p>
+        <button class="btn ac" id="btnBater">Bater o suco ⚙️</button>
+      </div>
+    </div>
+
+    <div class="dica">
+      <p><b>Traduzindo:</b> a fruta é o <b>argumento</b>, o parâmetro <code>fruta</code> é a "boca" da máquina, o miolo entre as chaves <code>{ }</code> é o <b>processamento</b>, e o <code>return</code> é o <b>copo de suco</b> que a máquina devolve para quem pediu.</p>
+    </div>
+  </div>
+
+  <div class="cartao">
+    <h3>Por que usar funções?</h3>
+    <ul>
+      <li><b>Não repetir código:</b> escreveu uma vez, usa mil vezes.</li>
+      <li><b>Organizar:</b> cada função faz uma coisa só, com um nome que explica o que ela faz.</li>
+      <li><b>Testar em partes:</b> se der problema, você sabe em qual "maquininha" olhar.</li>
+      <li><b>Trabalhar em equipe:</b> cada um cuida de uma função.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==========================================================
+     3. ANATOMIA
+     ========================================================== -->
+<section class="secao" id="sec-anatomia" role="tabpanel" aria-labelledby="aba-anatomia" data-titulo="Anatomia">
+  <span class="etiqueta">Estrutura</span>
+  <h2>Anatomia de uma função</h2>
+  <p>Clique (ou passe o mouse) em cada pedacinho do código para ver o que ele faz.</p>
+
+  <div class="cartao">
+    <pre class="anatomia"><span class="peca" data-peca="kw" tabindex="0" role="button">function</span> <span class="peca" data-peca="nome" tabindex="0" role="button">somar</span><span class="peca" data-peca="par" tabindex="0" role="button">(a, b)</span> <span class="peca" data-peca="chaveA" tabindex="0" role="button">{</span>
+    <span class="peca" data-peca="ret" tabindex="0" role="button">return</span> <span class="peca" data-peca="expr" tabindex="0" role="button">a + b</span>
+<span class="peca" data-peca="chaveF" tabindex="0" role="button">}</span>
+
+<span class="peca" data-peca="chamada" tabindex="0" role="button">somar(4, 6)</span>   <span style="opacity:.6">// devolve 10</span></pre>
+    <div class="cartao" id="anat-exp" aria-live="polite">
+      <h4>👆 Escolha uma peça</h4>
+      <p>Cada parte da função tem um papel. Clique em <code>function</code>, no nome, nos parênteses, nas chaves ou no <code>return</code>.</p>
+    </div>
+  </div>
+
+  <div class="cartao">
+    <h3>O molde geral</h3>
+    <pre class="codigo"><span class="cm">// 1) DEFINIR a função (a receita fica guardada)</span>
+function nomeDaFuncao(parametro1, parametro2) {
+    <span class="cm">// corpo: o que a função faz</span>
+    return resultado
+}
+
+<span class="cm">// 2) CHAMAR a função (aí sim ela executa)</span>
+let x = nomeDaFuncao(10, 20)
+console.log(x)</pre>
+    <div class="aviso"><p><b>Definir ≠ chamar.</b> Só definir a função não faz nada acontecer — é como escrever a receita e deixar o caderno fechado. A função só roda quando você a <b>chama</b>, com os parênteses.</p></div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     4. SEM PARÂMETRO
+     ========================================================== -->
+<section class="secao" id="sec-sem" role="tabpanel" aria-labelledby="aba-sem" data-titulo="Sem parâmetro">
+  <span class="etiqueta">Tipo 1</span>
+  <h2>Função <u>sem</u> passagem de parâmetro</h2>
+  <p>Os parênteses ficam <b>vazios</b>: a função já sabe tudo o que precisa fazer, não precisa receber nada de fora. Mas atenção — mesmo vazios, <b>os parênteses são obrigatórios na hora de chamar</b>.</p>
+
+  <div class="grade d3" id="cartoesSem"></div>
+
+  <div class="cartao">
+    <h3>🎲 O gancho: por que <code>sortearDado()</code> muda toda vez?</h3>
+    <p>Porque a função é executada <b>de novo, do zero</b>, a cada chamada. Ela não guarda o resultado anterior: chamou, roda tudo outra vez. Clique várias vezes no botão "Executar" do <code>sortearDado()</code> e veja.</p>
+    <div class="perigo">
+      <p><b>Erro clássico:</b> escrever <code>console.log(ifal)</code> sem os parênteses. Aí você não chama a função — você mostra a função inteira. O certo é <code>console.log(ifal())</code>.</p>
+    </div>
+    <button class="btn sec" id="btnSemParenteses">Ver o que acontece sem os parênteses</button>
+    <div class="console" id="consSemPar" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     5. COM PARÂMETRO
+     ========================================================== -->
+<section class="secao" id="sec-com" role="tabpanel" aria-labelledby="aba-com" data-titulo="Com parâmetro">
+  <span class="etiqueta">Tipo 2</span>
+  <h2>Função <u>com</u> passagem de parâmetro</h2>
+  <p>Agora a função recebe valores de fora para trabalhar. Digite os valores nos campos: a <b>chamada</b> se monta sozinha e o <b>retorno</b> aparece na hora.</p>
+
+  <div class="grade d2" id="cartoesCom"></div>
+
+  <div class="cartao">
+    <h3>🔗 Encadeamento: uma função comendo o retorno da outra</h3>
+    <p>Esse é o ponto alto. Como <code>IMC(peso, altura)</code> <b>devolve um número</b>, dá para jogar esse número direto dentro de <code>analisarIMC(...)</code>:</p>
+    <pre class="codigo">console.log(analisarIMC(IMC(peso, altura)))</pre>
+    <p>O JavaScript resolve <b>de dentro para fora</b>: primeiro calcula <code>IMC(70, 1.75)</code> → <code>22.86</code>, depois chama <code>analisarIMC(22.86)</code> → <code>"🟢PESO NORMAL"</code>.</p>
+    <div class="entradas">
+      <label class="campo">peso (kg) <input type="number" id="encPeso" value="70" step="0.1"></label>
+      <label class="campo">altura (m) <input type="number" id="encAltura" value="1.75" step="0.01"></label>
+    </div>
+    <div class="chamada" id="encChamada"></div>
+    <button class="btn" id="btnEnc">Executar encadeamento</button>
+    <div class="console" id="consEnc" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     6. PARÂMETRO x ARGUMENTO
+     ========================================================== -->
+<section class="secao" id="sec-ordem" role="tabpanel" aria-labelledby="aba-ordem" data-titulo="Ordem importa">
+  <span class="etiqueta">Armadilha nº 1</span>
+  <h2>Parâmetro × Argumento — e por que a ordem importa</h2>
+
+  <div class="grade d2">
+    <div class="cartao">
+      <h3>📌 Parâmetro</h3>
+      <p>É o <b>nome</b> que aparece na <b>definição</b> da função. É uma variável local que já nasce com valor.</p>
+      <pre class="codigo">function estacao(<b style="color:var(--primaria)">dia</b>, <b style="color:var(--primaria)">mes</b>) {
+    ...
+}</pre>
+      <p><span class="pilula local">dia</span><span class="pilula local">mes</span> só existem dentro da função.</p>
+    </div>
+    <div class="cartao">
+      <h3>🎯 Argumento</h3>
+      <p>É o <b>valor de verdade</b> que você manda na <b>chamada</b> da função.</p>
+      <pre class="codigo">estacao(<b style="color:var(--rosa)">25</b>, <b style="color:var(--rosa)">12</b>)</pre>
+      <p>O <b>1º argumento</b> cai no <b>1º parâmetro</b>, o <b>2º</b> no <b>2º</b>. Sempre nessa ordem — o JavaScript não adivinha.</p>
+    </div>
+  </div>
+
+  <div class="cartao">
+    <h3>🌦️ A função <code>estacao(dia, mes)</code> da nossa aula</h3>
+    <p>Essa é a função de verdade, copiada do arquivo <code>funcoes/estacoes.js</code>:</p>
+    <pre class="codigo">function estacao(dia, mes){
+    if ((mes == 9 &amp;&amp; dia &gt; 21) || mes == 10 || mes == 11 || (mes == 12 &amp;&amp; dia &lt; 21))
+        return "💐 PRIMAVERA"
+    if ((mes == 12 &amp;&amp; dia &gt;= 21) || mes == 1 || mes == 2 || (mes == 3 &amp;&amp; dia &lt; 20))
+        return "☀️ VERÃO"
+    if ((mes == 3 &amp;&amp; dia &gt;= 20) || mes == 4 || mes == 5 || (mes == 6 &amp;&amp; dia &lt; 21))
+        return "🍂 OUTONO"
+    if ((mes == 6 &amp;&amp; dia &gt;= 21) || mes == 7 || mes == 8 || (mes == 9 &amp;&amp; dia &lt;= 21))
+        return "☂️ INVERNO"
+}</pre>
+    <div class="entradas">
+      <label class="campo">dia <input type="number" id="estDia" value="25" min="1" max="31"></label>
+      <label class="campo">mês <input type="number" id="estMes" value="12" min="1" max="12"></label>
+    </div>
+    <div class="linha-btns">
+      <button class="btn" id="btnEstacao">Descobrir a estação</button>
+      <button class="btn rs" id="btnInverter">🔄 Inverter os argumentos</button>
+    </div>
+
+    <div class="grade d2">
+      <div class="cartao" style="border-color:var(--certo)">
+        <h4 style="color:var(--certo)">✅ Ordem certa</h4>
+        <div class="chamada" id="ordemCertaChamada">estacao(25, 12)</div>
+        <p class="retorno" id="ordemCertaRet">☀️ VERÃO</p>
+        <p style="font-size:.85rem;color:var(--txt2)" id="ordemCertaTxt">dia = 25, mes = 12 → 25 de dezembro.</p>
+      </div>
+      <div class="cartao" style="border-color:var(--erro)">
+        <h4 style="color:var(--erro)">❌ Ordem invertida</h4>
+        <div class="chamada" id="ordemErradaChamada">estacao(12, 25)</div>
+        <p class="retorno" style="color:var(--erro)" id="ordemErradaRet">undefined</p>
+        <p style="font-size:.85rem;color:var(--txt2)" id="ordemErradaTxt">dia = 12, mes = 25 → não existe mês 25! Nenhum <code>if</code> foi verdadeiro, a função terminou sem <code>return</code> e devolveu <code>undefined</code>.</p>
+      </div>
+    </div>
+
+    <div class="aviso"><p><b>Guarde isso:</b> <code>estacao(25, 12)</code> ≠ <code>estacao(12, 25)</code>. Trocar a ordem não dá "erro vermelho" — dá <b>resposta errada em silêncio</b>, que é bem pior.</p></div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     7. RETURN x CONSOLE.LOG
+     ========================================================== -->
+<section class="secao" id="sec-return" role="tabpanel" aria-labelledby="aba-return" data-titulo="return × log">
+  <span class="etiqueta">Armadilha nº 2</span>
+  <h2><code>return</code> × <code>console.log</code></h2>
+  <p>As duas "mostram" coisas, mas só uma <b>devolve</b> um valor. Compare as duas irmãs:</p>
+
+  <div class="grade d2">
+    <div class="cartao" style="border-color:var(--certo)">
+      <h3 style="color:var(--certo)">✅ Com <code>return</code></h3>
+      <pre class="codigo">function somaComRetorno(a, b) {
+    return a + b
+}
+
+let r1 = somaComRetorno(2, 3)
+console.log(r1)
+console.log(somaComRetorno(2, 3) * 10)</pre>
+      <button class="btn ac" data-run="ret1">Executar</button>
+      <div class="console" id="consRet1" aria-live="polite"></div>
+    </div>
+    <div class="cartao" style="border-color:var(--erro)">
+      <h3 style="color:var(--erro)">⚠️ Só com <code>console.log</code></h3>
+      <pre class="codigo">function somaQueSoImprime(a, b) {
+    console.log(a + b)
+}
+
+let r2 = somaQueSoImprime(2, 3)
+console.log(r2)
+console.log(somaQueSoImprime(2, 3) * 10)</pre>
+      <button class="btn rs" data-run="ret2">Executar</button>
+      <div class="console" id="consRet2" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="cartao">
+    <h3>O que a diferença significa na prática</h3>
+    <div class="rolagem">
+      <table class="tabela">
+        <thead><tr><th></th><th><code>return</code></th><th><code>console.log</code></th></tr></thead>
+        <tbody>
+          <tr><td>Para que serve</td><td>Devolver um valor para quem chamou</td><td>Mostrar algo na tela</td></tr>
+          <tr><td>Dá para guardar numa variável?</td><td>✅ Sim</td><td>❌ Não (vem <code>undefined</code>)</td></tr>
+          <tr><td>Dá para usar numa conta?</td><td>✅ Sim</td><td>❌ Não (<code>undefined * 10</code> = <code>NaN</code>)</td></tr>
+          <tr><td>Dá para encadear com outra função?</td><td>✅ Sim</td><td>❌ Não</td></tr>
+          <tr><td>Encerra a função?</td><td>✅ Sim, na hora</td><td>❌ Não, o código continua</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="perigo"><p><b>Regra de bolso:</b> se você quer <b>usar</b> o resultado depois (guardar, somar, comparar, passar para outra função), a função <b>precisa</b> de <code>return</code>. Se é só para aparecer na tela, <code>console.log</code> resolve.</p></div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     8. ESCOPO
+     ========================================================== -->
+<section class="secao" id="sec-escopo" role="tabpanel" aria-labelledby="aba-escopo" data-titulo="Escopo">
+  <span class="etiqueta">Armadilha nº 3</span>
+  <h2>Escopo — o que existe dentro e fora da função</h2>
+  <p>Cada função é uma <b>caixinha fechada</b>. O que nasce lá dentro, morre lá dentro.</p>
+
+  <div class="cartao">
+    <div class="escopo-mundo" id="caixaMundo">
+      <span class="rotulo">🌍 FORA DA FUNÇÃO (escopo global)</span>
+      <p style="margin-top:.4rem"><span class="pilula global">nomeDaTurma = "911C"</span> — existe no arquivo inteiro, inclusive dentro da função.</p>
+
+      <div class="escopo-func" id="caixaFuncao">
+        <span class="rotulo">🔒 DENTRO de calcularTotal(preco)</span>
+        <p style="margin-top:.4rem">
+          <span class="pilula local">preco</span> <span style="font-size:.8rem">(parâmetro: variável local que já nasce com valor)</span><br>
+          <span class="pilula local">imposto</span> <span style="font-size:.8rem">(variável local, criada com <code>let</code>)</span>
+        </p>
+        <p style="font-size:.85rem;margin:0">Aqui dentro dá para usar <b>tudo</b>: <code>preco</code>, <code>imposto</code> e também <code>nomeDaTurma</code>.</p>
+      </div>
+
+      <p style="font-size:.9rem;margin:.8rem 0 0">Aqui fora, <code>imposto</code> simplesmente <b>não existe</b>.</p>
+    </div>
+
+    <pre class="codigo">let nomeDaTurma = "911C"
+
+function calcularTotal(preco) {
+    let imposto = preco * 0.1   <span class="cm">// local: só vive aqui dentro</span>
+    return preco + imposto
+}
+
+console.log(calcularTotal(100))   <span class="cm">// 110</span>
+console.log(imposto)              <span class="cm">// 💥 e agora?</span></pre>
+
+    <div class="linha-btns">
+      <button class="btn" data-run="escopoOk">Executar só as linhas certas</button>
+      <button class="btn rs" id="btnEscopoErro">Tentar usar <code>imposto</code> fora 💥</button>
+    </div>
+    <div class="console" id="consEscopo" aria-live="polite"></div>
+
+    <div class="dica"><p><b>Por que isso é bom?</b> Porque você pode usar o nome <code>i</code>, <code>total</code> ou <code>n</code> em várias funções sem uma atrapalhar a outra. Cada caixinha tem as suas.</p></div>
+  </div>
+
+  <div class="cartao">
+    <h3>Bônus: o parâmetro é uma cópia</h3>
+    <pre class="codigo">function dobrar(n) {
+    n = n * 2       <span class="cm">// muda só a cópia lá dentro</span>
+    return n
+}
+
+let valor = 5
+console.log(dobrar(valor))  <span class="cm">// 10</span>
+console.log(valor)          <span class="cm">// 5 — o original não mudou!</span></pre>
+    <button class="btn ac" data-run="escopoCopia">Executar</button>
+    <div class="console" id="consCopia" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     GALERIA DE EXEMPLOS
+     ========================================================== -->
+<section class="secao" id="sec-galeria" role="tabpanel" aria-labelledby="aba-galeria" data-titulo="Galeria">
+  <span class="etiqueta">Exemplos extras</span>
+  <h2>🖼️ Galeria de exemplos</h2>
+  <p>Vinte e uma funções novinhas, com contextos do dia a dia: celular, escola, lanchonete, esporte, dinheiro e meio ambiente. Mexa nos controles e clique em <b>Executar</b>.</p>
+
+  <div class="filtros" id="filtrosGaleria" role="group" aria-label="Filtrar exemplos por categoria"></div>
+  <div class="galeria" id="galeria"></div>
+</section>
+
+<!-- ==========================================================
+     A MESMA FUNÇÃO EM 4 VERSÕES
+     ========================================================== -->
+<section class="secao" id="sec-versoes" role="tabpanel" aria-labelledby="aba-versoes" data-titulo="4 versões">
+  <span class="etiqueta">O coração da revisão</span>
+  <h2>🔁 A mesma função em 4 versões</h2>
+  <p>Uma única ideia — <b>calcular a área de um quadrado</b> — escrita de quatro jeitos diferentes. Compare e veja por que a versão 4 é a "profissional".</p>
+
+  <div class="cartao">
+    <label class="campo" for="ladoRange">Escolha o lado do quadrado:
+      <span class="slider-linha">
+        <input type="range" id="ladoRange" min="1" max="20" value="12" step="1">
+        <span class="slider-valor" id="ladoValor">12</span>
+      </span>
+    </label>
+    <p style="font-size:.85rem;color:var(--txt2)">Clique em <b>Executar</b> em cada versão — a tabela comparativa lá embaixo vai se preenchendo.</p>
+  </div>
+
+  <div class="versoes">
+    <div class="versao v1" data-v="1">
+      <h4>❶ Sem parâmetro, valor fixo</h4>
+      <pre class="codigo">function areaDoQuadrado1() {
+    return 5 * 5
+}</pre>
+      <div class="chamada">areaDoQuadrado1()</div>
+      <button class="btn pq" type="button" data-exec="1">▶ Executar</button>
+      <div class="saida-mono" data-saida="1">—</div>
+      <p class="veredito">😕 Rígida: responde sempre <b>25</b>, não importa o lado que você escolher.</p>
+    </div>
+
+    <div class="versao v2" data-v="2">
+      <h4>❷ Com parâmetro</h4>
+      <pre class="codigo">function areaDoQuadrado2(lado) {
+    return lado * lado
+}</pre>
+      <div class="chamada" data-chamada="2">areaDoQuadrado2(12)</div>
+      <button class="btn pq" type="button" data-exec="2">▶ Executar</button>
+      <div class="saida-mono" data-saida="2">—</div>
+      <p class="veredito">🙂 Agora serve para <b>qualquer</b> lado. É o pulo do gato do parâmetro.</p>
+    </div>
+
+    <div class="versao v3" data-v="3">
+      <h4>❸ Sem <code>return</code>, só imprime</h4>
+      <pre class="codigo">function areaDoQuadrado3(lado) {
+    console.log(lado * lado)
+}</pre>
+      <div class="chamada" data-chamada="3">let x = areaDoQuadrado3(12)</div>
+      <button class="btn pq" type="button" data-exec="3">▶ Executar</button>
+      <div class="saida-mono" data-saida="3">—</div>
+      <p class="veredito">😬 O número <b>aparece</b>, mas não dá para guardar nem reaproveitar: <code>x</code> fica <code>undefined</code>.</p>
+    </div>
+
+    <div class="versao v4" data-v="4">
+      <h4>❹ Com parâmetro, <code>return</code> e encadeada</h4>
+      <pre class="codigo">function areaDoQuadrado4(lado) {
+    return lado * lado
+}
+function classificarArea(area) {
+    return area &gt; 100 ? "GRANDE" : "PEQUENA"
+}</pre>
+      <div class="chamada" data-chamada="4">classificarArea(areaDoQuadrado4(12))</div>
+      <button class="btn pq ac" type="button" data-exec="4">▶ Executar</button>
+      <div class="saida-mono" data-saida="4">—</div>
+      <p class="veredito">🤩 A versão completa: calcula, devolve e o resultado ainda alimenta <b>outra</b> função.</p>
+    </div>
+  </div>
+
+  <div class="cartao" style="margin-top:1.2rem">
+    <h3>📊 Comparando as quatro</h3>
+    <div class="rolagem">
+      <table class="tabela" id="tabelaVersoes">
+        <thead><tr><th>Versão</th><th>Reutilizável?</th><th>Aceita entrada?</th><th>Devolve valor?</th><th>Encadeável?</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="linha-btns">
+      <button class="btn sec pq" type="button" id="btnRevelarVersoes">Revelar tudo</button>
+      <button class="btn sec pq" type="button" id="btnZerarVersoes">Zerar tabela</button>
+    </div>
+    <div class="dica"><p><b>Moral da história:</b> a função fica boa quando ela <b>recebe</b> o que precisa (parâmetro) e <b>devolve</b> o resultado (<code>return</code>). Aí ela vira uma peça de LEGO que encaixa em qualquer lugar.</p></div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     MINI-PROJETOS
+     ========================================================== -->
+<section class="secao" id="sec-projetos" role="tabpanel" aria-labelledby="aba-projetos" data-titulo="Mini-projetos">
+  <span class="etiqueta">Funções trabalhando juntas</span>
+  <h2>🛠️ Mini-projetos</h2>
+  <p>Programa de verdade é feito de <b>várias funções pequenas</b> chamando umas às outras. Nos diagramas abaixo, a função que está executando <b>acende</b>.</p>
+  <div id="listaProjetos"></div>
+</section>
+
+<!-- ==========================================================
+     GALERIA DE ERROS
+     ========================================================== -->
+<section class="secao" id="sec-erros" role="tabpanel" aria-labelledby="aba-erros" data-titulo="O que acontece se…">
+  <span class="etiqueta">Erros clássicos</span>
+  <h2>💥 "O que acontece se…"</h2>
+  <p>Oito erros que <b>todo mundo</b> comete no começo. Clique no cartão para <b>virar</b> e ver o conserto.</p>
+  <div class="linha-btns">
+    <button class="btn sec pq" type="button" id="btnVirarTodos">🔄 Virar todos</button>
+  </div>
+  <div class="erros" id="galeriaErros"></div>
+  <div class="dica"><p><b>Detalhe importante:</b> só os erros 6 e 7 fazem o Node parar com uma mensagem vermelha. Os outros seis rodam "normalmente" e entregam a <b>resposta errada em silêncio</b> — por isso o teste de mesa é tão importante.</p></div>
+</section>
+
+<!-- ==========================================================
+     9. PLAYGROUND
+     ========================================================== -->
+<section class="secao" id="sec-play" role="tabpanel" aria-labelledby="aba-play" data-titulo="Playground">
+  <span class="etiqueta">Mão na massa</span>
+  <h2>🧪 Playground — escreva e execute</h2>
+  <p>Escreva JavaScript aqui e clique em <b>Executar</b>. Use <code>console.log(...)</code> para ver os resultados. Não precisa instalar nada.</p>
+
+  <div class="cartao">
+    <div class="linha-btns" id="botoesExemplos"><b style="font-size:.85rem;margin-right:.3rem">Carregar exemplo:</b></div>
+    <label class="campo" for="editor">Seu código:</label>
+    <textarea id="editor" rows="14" spellcheck="false" aria-label="Editor de código JavaScript"></textarea>
+    <div class="linha-btns">
+      <button class="btn" id="btnRodar">▶ Executar</button>
+      <button class="btn sec" id="btnLimpar">Limpar console</button>
+      <button class="btn sec" id="btnLimparCod">Apagar código</button>
+    </div>
+    <div class="console" id="consPlay" aria-live="polite"></div>
+    <div class="aviso"><p><b>Atenção:</b> aqui não funcionam <code>prompt()</code>, <code>alert()</code> nem <code>require("prompt-sync")</code> — isso é coisa do Node.js/terminal. Para testar com entrada do usuário, rode os arquivos <code>.js</code> no Node (veja o rodapé). E se você fizer um laço infinito, a página avisa e para sozinha. 😉</p></div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     10. QUIZ
+     ========================================================== -->
+<section class="secao" id="sec-quiz" role="tabpanel" aria-labelledby="aba-quiz" data-titulo="Quiz">
+  <span class="etiqueta">Teste seus conhecimentos</span>
+  <h2>❓ Quiz — 10 perguntas</h2>
+  <p>Escolha uma alternativa. O feedback aparece na hora, explicando o <b>porquê</b>.</p>
+  <div id="quizLista"></div>
+  <div class="placar" id="placar" aria-live="polite">
+    <span id="placarTxt">Respondidas: 0 de 10 · Acertos: 0</span>
+    <button class="btn sec pq" id="btnRefazer" style="background:#fff3;color:#fff;border-color:#fff6">Refazer quiz</button>
+  </div>
+</section>
+
+<!-- ==========================================================
+     11. EXERCÍCIOS RESOLVIDOS
+     ========================================================== -->
+<section class="secao" id="sec-resolvidos" role="tabpanel" aria-labelledby="aba-resolvidos" data-titulo="Resolvidos">
+  <span class="etiqueta">R1 a R5</span>
+  <h2>✍️ Exercícios resolvidos</h2>
+  <p>Tente resolver de cabeça (ou no Playground!) <b>antes</b> de abrir a solução. Vale muito mais.</p>
+  <div id="listaResolvidos"></div>
+</section>
+
+<!-- ==========================================================
+     12. TESTE DE MESA INTERATIVO
+     ========================================================== -->
+<section class="secao" id="sec-mesa" role="tabpanel" aria-labelledby="aba-mesa" data-titulo="Teste de mesa">
+  <span class="etiqueta">Ferramenta central</span>
+  <h2>🔍 Teste de mesa interativo</h2>
+  <p>Teste de mesa é <b>rastrear o código linha por linha</b>, anotando numa tabela o valor de cada variável e o que a função devolve. É o jeito de "ser o computador" com papel e caneta.</p>
+  <div class="dica"><p><b>Como usar aqui:</b> primeiro tente preencher a tabela sozinho e clicar em <b>Conferir</b>. Depois use o <b>Próximo passo</b> para ver a execução acontecendo linha a linha.</p></div>
+  <div id="listaMesa"></div>
+</section>
+
+<!-- ==========================================================
+     13. PARA O CADERNO
+     ========================================================== -->
+<section class="secao" id="sec-caderno" role="tabpanel" aria-labelledby="aba-caderno" data-titulo="Para o caderno">
+  <div class="nao-imprime">
+    <span class="etiqueta">Ficha de exercícios</span>
+    <h2>📓 Para fazer no caderno</h2>
+    <p>Esta parte é <b>à mão</b>, sem computador. Imprima ou copie no caderno.</p>
+    <div class="linha-btns">
+      <button class="btn" id="btnImprimir">🖨️ Imprimir esta folha</button>
+    </div>
+  </div>
+
+  <div class="cartao">
+    <div class="ficha-cabecalho">
+      <div>
+        <b>IFAL — Campus Maceió</b><br>
+        Introdução à Programação (INPR) — Prof. Augusto
+      </div>
+      <div style="text-align:right">
+        <b>Turma 911C</b><br>
+        Ficha: Funções — Teste de mesa
+      </div>
+    </div>
+    <p class="ficha-linha-nome">Nome: _______________________________________________ Nº: ______ Data: ____ / ____ / ______</p>
+
+    <div class="perigo">
+      <p><b>⚠️ Esta ficha é para fazer À MÃO, sem computador.</b> O objetivo é você executar o código na sua cabeça, como se fosse o computador. Só depois de terminar tudo é que vale rodar no Node para conferir.</p>
+    </div>
+
+    <h3>Parte A — Teste de mesa</h3>
+    <p style="font-size:.9rem">Para cada questão: preencha a tabela linha por linha e escreva a <b>saída final</b> exatamente como apareceria no terminal.</p>
+
+    <div class="exerc">
+      <h4>T2) A pegadinha do escopo</h4>
+      <pre class="codigo">function dobrar(n) {
+    n = n * 2
+    return n
+}
+let valor = 5
+console.log(dobrar(valor))
+console.log(valor)</pre>
+      <table class="tabela vazia">
+        <thead><tr><th>Linha executada</th><th>valor (fora)</th><th>n (dentro)</th><th>retorno</th><th>saída no terminal</th></tr></thead>
+        <tbody><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+      <p><b>Saída final:</b> ______________________________________</p>
+      <p style="font-size:.88rem"><b>Responda também:</b> depois de chamar <code>dobrar(valor)</code>, a variável <code>valor</code> mudou? Por quê?</p>
+      <p>_________________________________________________________________</p>
+    </div>
+
+    <div class="exerc">
+      <h4>T4) A ordem dos argumentos</h4>
+      <p style="font-size:.9rem">Use a função <code>estacao(dia, mes)</code> vista na aula (arquivo <code>estacoes.js</code>).</p>
+      <pre class="codigo">function estacao(dia, mes){
+    if ((mes == 9 &amp;&amp; dia &gt; 21) || mes == 10 || mes == 11 || (mes == 12 &amp;&amp; dia &lt; 21))
+        return "💐 PRIMAVERA"
+    if ((mes == 12 &amp;&amp; dia &gt;= 21) || mes == 1 || mes == 2 || (mes == 3 &amp;&amp; dia &lt; 20))
+        return "☀️ VERÃO"
+    if ((mes == 3 &amp;&amp; dia &gt;= 20) || mes == 4 || mes == 5 || (mes == 6 &amp;&amp; dia &lt; 21))
+        return "🍂 OUTONO"
+    if ((mes == 6 &amp;&amp; dia &gt;= 21) || mes == 7 || mes == 8 || (mes == 9 &amp;&amp; dia &lt;= 21))
+        return "☂️ INVERNO"
+}
+console.log(estacao(25, 12))
+console.log(estacao(12, 25))</pre>
+      <table class="tabela vazia">
+        <thead><tr><th>Chamada</th><th>dia</th><th>mes</th><th>Qual <code>if</code> foi verdadeiro?</th><th>Retorno</th></tr></thead>
+        <tbody><tr><td>estacao(25, 12)</td><td></td><td></td><td></td><td></td></tr><tr><td>estacao(12, 25)</td><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+      <p><b>Saída final:</b> ______________________________________</p>
+      <p style="font-size:.88rem"><b>Explique com suas palavras</b> por que a segunda chamada não deu o mesmo resultado da primeira:</p>
+      <p>_________________________________________________________________</p>
+    </div>
+
+    <div class="exerc">
+      <h4>T6) Trocando de lugar</h4>
+      <pre class="codigo">function troca(a, b) {
+    return b + " " + a
+}
+console.log(troca("mundo", "Olá"))</pre>
+      <table class="tabela vazia">
+        <thead><tr><th>Chamada</th><th>a</th><th>b</th><th>Expressão <code>b + " " + a</code></th><th>Retorno</th></tr></thead>
+        <tbody><tr><td>troca("mundo", "Olá")</td><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+      <p><b>Saída final:</b> ______________________________________</p>
+    </div>
+
+    <div class="exerc">
+      <h4>T7) Pontos do time</h4>
+      <pre class="codigo">function pontos(vitorias, empates) {
+    return vitorias * 3 + empates
+}
+console.log(pontos(4, 2))
+console.log(pontos(2, 4))</pre>
+      <table class="tabela vazia">
+        <thead><tr><th>Chamada</th><th>vitorias</th><th>empates</th><th>Conta feita</th><th>Retorno</th></tr></thead>
+        <tbody><tr><td>pontos(4, 2)</td><td></td><td></td><td></td><td></td></tr><tr><td>pontos(2, 4)</td><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+      <p><b>Saída final:</b> ______________________________________</p>
+      <p style="font-size:.88rem"><b>Pense:</b> por que os dois resultados são diferentes, se os números usados são os mesmos?</p>
+      <p>_________________________________________________________________</p>
+    </div>
+
+    <div class="exerc">
+      <h4>T8) Contagem regressiva montando um texto</h4>
+      <pre class="codigo">function contar(n) {
+    let saida = ""
+    for (let i = n; i &gt;= 1; i--) {
+        saida = saida + i + " "
+    }
+    return saida
+}
+console.log(contar(5))</pre>
+      <table class="tabela vazia">
+        <thead><tr><th>Volta do laço</th><th>i</th><th>saida (depois da linha)</th></tr></thead>
+        <tbody>
+          <tr><td>antes do laço</td><td>—</td><td>"" (vazio)</td></tr>
+          <tr><td>1ª</td><td></td><td></td></tr>
+          <tr><td>2ª</td><td></td><td></td></tr>
+          <tr><td>3ª</td><td></td><td></td></tr>
+          <tr><td>4ª</td><td></td><td></td></tr>
+          <tr><td>5ª</td><td></td><td></td></tr>
+        </tbody>
+      </table>
+      <p><b>Saída final (cuidado com o espaço no fim!):</b> ______________________________________</p>
+    </div>
+
+    <div class="exerc">
+      <h4>T10) Somar… nem sempre soma</h4>
+      <pre class="codigo">function somar(a, b) {
+    return a + b
+}
+console.log(somar(2, 3))
+console.log(somar("2", 3))
+console.log(somar(5))</pre>
+      <table class="tabela vazia">
+        <thead><tr><th>Chamada</th><th>a</th><th>b</th><th>O que o <code>+</code> faz aqui?</th><th>Retorno</th></tr></thead>
+        <tbody>
+          <tr><td>somar(2, 3)</td><td></td><td></td><td></td><td></td></tr>
+          <tr><td>somar("2", 3)</td><td></td><td></td><td></td><td></td></tr>
+          <tr><td>somar(5)</td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+      <p><b>Saída final:</b> ______________________________________</p>
+      <p style="font-size:.88rem"><b>Explique:</b> o que aconteceu na segunda e na terceira chamada?</p>
+      <p>_________________________________________________________________</p>
+    </div>
+
+    <h3>Parte B — Desafios extras (escreva as funções)</h3>
+    <p style="font-size:.9rem">Escreva no caderno a <b>definição</b> de cada função e pelo menos <b>duas chamadas</b> de teste com o resultado esperado. Depois, se quiser, digite no Node para conferir.</p>
+    <ol class="desafios">
+      <li><b>P1.</b> <code>triplo(n)</code> — devolve o triplo de um número.</li>
+      <li><b>P2.</b> <code>areaRetangulo(base, altura)</code> e <code>perimetroRetangulo(base, altura)</code>.</li>
+      <li><b>P3.</b> <code>areaTriangulo(base, altura)</code> — lembre da divisão por 2.</li>
+      <li><b>P4.</b> <code>converterMoeda(reais, cotacao)</code> — quantos dólares dá?</li>
+      <li><b>P5.</b> <code>menorDeTres(a, b, c)</code> — devolve o menor dos três.</li>
+      <li><b>P6.</b> <code>souMaiorDeIdade(idade)</code> — devolve um <b>texto</b> ("Maior de idade" ou "Menor de idade").</li>
+      <li><b>P7.</b> <code>fahrenheitParaCelsius(f)</code> — o caminho inverso do que vimos.</li>
+      <li><b>P8.</b> <code>contarRegressiva(n)</code> — <b>sem</b> <code>return</code>, só imprime, usando <code>for</code>.</li>
+    </ol>
+
+    <h3>Parte C — Explique com suas palavras</h3>
+    <ol>
+      <li>Qual a diferença entre <b>parâmetro</b> e <b>argumento</b>? Dê um exemplo. <br>____________________________________________________________</li>
+      <li>O que uma função devolve quando ela não tem <code>return</code>? <br>____________________________________________________________</li>
+      <li>Por que <code>console.log(ifal)</code> não é a mesma coisa que <code>console.log(ifal())</code>? <br>____________________________________________________________</li>
+      <li>Por que dá <code>ReferenceError</code> quando usamos uma variável local fora da função? <br>____________________________________________________________</li>
+    </ol>
+
+    <p class="so-impressao" style="margin-top:1.4rem;font-size:10pt;border-top:1px solid #999;padding-top:.5rem">
+      Revisão de Funções — INPR 911C — IFAL Maceió — Prof. Augusto
+    </p>
+  </div>
+</section>
+
+<footer class="rodape">
+  <h3>🚀 Como rodar os arquivos no Node.js</h3>
+  <p>Os exemplos desta revisão também estão em arquivos <code>.js</code> para você rodar no terminal:</p>
+  <pre class="codigo">cd funcoes/revisao
+
+node 01_sem_parametro.js
+node 02_com_parametro.js
+node 03_parametro_x_argumento.js
+node 04_return_x_console_log.js
+node 05_escopo.js
+node 06_exercicios_resolvidos.js
+node 07_exercicios_propostos.js
+node 08_teste_de_mesa.js</pre>
+  <p>Alguns arquivos pedem dados ao usuário e usam <code>const prompt = require("prompt-sync")()</code> — o pacote já está no <code>package.json</code> da raiz do repositório. Se faltar, rode <code>npm install prompt-sync</code>.</p>
+  <p style="margin-top:1.2rem">Revisão de Funções · Introdução à Programação (INPR) · Turma 911C · IFAL Campus Maceió · Prof. Augusto</p>
+</footer>
+
+</main>
+
+<script>
+"use strict";
+/* ============================================================
+   UTILITÁRIOS
+   ============================================================ */
+function $(id){ return document.getElementById(id) }
+function criar(tag, attrs, texto){
+  var el = document.createElement(tag)
+  if (attrs) for (var k in attrs) el.setAttribute(k, attrs[k])
+  if (texto !== undefined) el.textContent = texto
+  return el
+}
+function escapar(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+}
+
+/* ============================================================
+   TEMA CLARO / ESCURO
+   ============================================================ */
+;(function(){
+  var raiz = document.documentElement
+  var btn = $('btnTema')
+  var salvo = null
+  try { salvo = localStorage.getItem('inpr-tema') } catch(e){}
+  if (salvo === 'claro' || salvo === 'escuro') raiz.setAttribute('data-tema', salvo)
+  else raiz.removeAttribute('data-tema')
+
+  function rotulo(){
+    var t = raiz.getAttribute('data-tema')
+    if (t === 'escuro') btn.textContent = '☀️ Claro'
+    else if (t === 'claro') btn.textContent = '🌙 Escuro'
+    else btn.textContent = '🌓 Tema'
+  }
+  rotulo()
+  btn.addEventListener('click', function(){
+    var atual = raiz.getAttribute('data-tema')
+    var escuroDoSistema = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+    var novo
+    if (!atual) novo = escuroDoSistema ? 'claro' : 'escuro'
+    else novo = (atual === 'escuro') ? 'claro' : 'escuro'
+    raiz.setAttribute('data-tema', novo)
+    try { localStorage.setItem('inpr-tema', novo) } catch(e){}
+    rotulo()
+  })
+})()
+
+/* ============================================================
+   NAVEGAÇÃO POR ABAS + PROGRESSO
+   ============================================================ */
+var SECOES = Array.prototype.slice.call(document.querySelectorAll('.secao'))
+var visitadas = {}
+var abasEl = $('abas')
+
+SECOES.forEach(function(sec, i){
+  var b = criar('button', {
+    id: 'aba-' + sec.id.replace('sec-',''),
+    role: 'tab',
+    'aria-controls': sec.id,
+    'aria-selected': i === 0 ? 'true' : 'false',
+    'data-alvo': sec.id
+  }, (i+1) + '. ' + sec.getAttribute('data-titulo'))
+  b.addEventListener('click', function(){ irPara(sec.id) })
+  abasEl.appendChild(b)
+})
+
+function irPara(id){
+  SECOES.forEach(function(s){ s.classList.toggle('ativa', s.id === id) })
+  Array.prototype.forEach.call(abasEl.children, function(b){
+    var sel = b.getAttribute('data-alvo') === id
+    b.setAttribute('aria-selected', sel ? 'true' : 'false')
+    if (sel) { b.classList.add('visitada'); b.scrollIntoView({block:'nearest', inline:'center'}) }
+  })
+  visitadas[id] = true
+  atualizarProgresso()
+  window.scrollTo({top:0, behavior:'smooth'})
+}
+function atualizarProgresso(){
+  var n = Object.keys(visitadas).length
+  var pct = Math.round(n / SECOES.length * 100)
+  $('progresso').style.width = pct + '%'
+  $('progressoWrap').setAttribute('aria-valuenow', String(pct))
+}
+visitadas['sec-capa'] = true
+atualizarProgresso()
+$('btnComecar').addEventListener('click', function(){ irPara('sec-oque') })
+
+/* ============================================================
+   MOTOR DE EXECUÇÃO SEGURA DE CÓDIGO
+   ============================================================ */
+function formatar(v){
+  if (typeof v === 'string') return v
+  if (v === undefined) return 'undefined'
+  if (v === null) return 'null'
+  if (typeof v === 'number' || typeof v === 'boolean') return String(v)
+  if (typeof v === 'function') return '[Function: ' + (v.name || 'anônima') + ']'
+  try { return JSON.stringify(v) } catch(e){ return String(v) }
+}
+
+/* Insere __tick() no início de cada laço, para evitar travar a aba. */
+function protegerLaces(codigo){
+  var out = '', i = 0, n = codigo.length, dosPendentes = 0
+  function ehLetra(c){ return /[A-Za-z0-9_$]/.test(c) }
+  while (i < n){
+    var c = codigo.charAt(i)
+    // strings
+    if (c === '"' || c === "'" || c === '`'){
+      var q = c; out += c; i++
+      while (i < n){
+        if (codigo.charAt(i) === '\\'){ out += codigo.charAt(i) + (codigo.charAt(i+1) || ''); i += 2; continue }
+        out += codigo.charAt(i)
+        if (codigo.charAt(i) === q){ i++; break }
+        i++
+      }
+      continue
+    }
+    // comentários
+    if (c === '/' && codigo.charAt(i+1) === '/'){
+      while (i < n && codigo.charAt(i) !== '\n'){ out += codigo.charAt(i); i++ }
+      continue
+    }
+    if (c === '/' && codigo.charAt(i+1) === '*'){
+      out += '/*'; i += 2
+      while (i < n && !(codigo.charAt(i) === '*' && codigo.charAt(i+1) === '/')){ out += codigo.charAt(i); i++ }
+      out += '*/'; i += 2
+      continue
+    }
+    // palavras
+    if (/[A-Za-z_$]/.test(c)){
+      var j = i
+      while (j < n && ehLetra(codigo.charAt(j))) j++
+      var palavra = codigo.slice(i, j)
+      var antes = out.replace(/\s+$/,'').slice(-1)
+      if ((palavra === 'for' || palavra === 'while' || palavra === 'do') && antes !== '.'){
+        out += palavra
+        i = j
+        if (palavra === 'do') dosPendentes++
+        if (palavra !== 'do'){
+          while (i < n && /\s/.test(codigo.charAt(i))){ out += codigo.charAt(i); i++ }
+          if (codigo.charAt(i) === '('){
+            var d = 0
+            do {
+              if (codigo.charAt(i) === '(') d++
+              else if (codigo.charAt(i) === ')') d--
+              out += codigo.charAt(i); i++
+            } while (i < n && d > 0)
+          }
+        }
+        var salvo = i, espacos = ''
+        while (i < n && /\s/.test(codigo.charAt(i))){ espacos += codigo.charAt(i); i++ }
+        var prox = codigo.charAt(i)
+        if (palavra === 'while' && dosPendentes > 0 && prox !== '{'){
+          // é o "while" final de um do..while — não transformar
+          dosPendentes--
+          out += espacos
+          continue
+        }
+        out += espacos
+        if (prox === '{'){ out += '{ __tick();'; i++ }
+        else {
+          out += '{ __tick(); '
+          var dd = 0, fechou = false
+          while (i < n){
+            var ch = codigo.charAt(i)
+            if (ch === '(' || ch === '[' || ch === '{') dd++
+            if (ch === ')' || ch === ']' || ch === '}') dd--
+            out += ch; i++
+            if (ch === ';' && dd <= 0){ fechou = true; break }
+          }
+          out += ' }'
+          if (!fechou) { /* fim do código: fecha mesmo assim */ }
+        }
+        continue
+      }
+      out += palavra; i = j
+      continue
+    }
+    out += c; i++
+  }
+  return out
+}
+
+function criarTick(){
+  var contador = 0
+  var inicio = Date.now()
+  return function(){
+    contador++
+    if (contador > 400000) throw new Error('LACO_INFINITO')
+    if ((contador & 2047) === 0 && Date.now() - inicio > 2500) throw new Error('LACO_INFINITO')
+  }
+}
+
+function limparConsole(el){ el.textContent = '' }
+
+function escreverConsole(el, texto, classe){
+  var linha = criar('div', classe ? {class: classe} : null, texto)
+  el.appendChild(linha)
+  el.scrollTop = el.scrollHeight
+}
+
+/**
+ * Executa o código do aluno com console.log capturado.
+ * @param {string} codigo
+ * @param {HTMLElement} destino elemento .console
+ * @param {boolean} manter  se true, não limpa o console antes
+ */
+function executar(codigo, destino, manter){
+  if (!manter) limparConsole(destino)
+  var falsoConsole = {
+    log: function(){
+      var partes = []
+      for (var i = 0; i < arguments.length; i++) partes.push(formatar(arguments[i]))
+      escreverConsole(destino, partes.join(' '))
+    }
+  }
+  falsoConsole.info = falsoConsole.log
+  falsoConsole.warn = falsoConsole.log
+  falsoConsole.error = function(){
+    var partes = []
+    for (var i = 0; i < arguments.length; i++) partes.push(formatar(arguments[i]))
+    escreverConsole(destino, partes.join(' '), 'err')
+  }
+  var bloqueado = function(nome){
+    return function(){ throw new Error('A função ' + nome + '() não funciona aqui no navegador. Ela é do Node.js/terminal.') }
+  }
+  if (/\brequire\s*\(/.test(codigo)){
+    escreverConsole(destino, 'ℹ️ O comando require("prompt-sync") só funciona no Node.js, no terminal.', 'info')
+    escreverConsole(destino, 'Aqui no navegador, troque a leitura por valores fixos — por exemplo: let peso = 70', 'info')
+    escreverConsole(destino, 'Para testar com entrada do usuário, rode o arquivo .js no Node (veja o rodapé da página).', 'info')
+    return
+  }
+  var protegido
+  try {
+    protegido = protegerLaces(codigo)
+  } catch(e){
+    protegido = codigo
+  }
+  try {
+    var fn = new Function('console','__tick','prompt','alert','confirm','require','window','document',
+      '"use strict";\n' + protegido)
+    fn(falsoConsole, criarTick(), bloqueado('prompt'), bloqueado('alert'), bloqueado('confirm'),
+       bloqueado('require'), undefined, undefined)
+  } catch(err){
+    if (err && err.message === 'LACO_INFINITO'){
+      escreverConsole(destino, '⏱️ Opa! Esse laço rodou tempo demais — parece um laço infinito.', 'err')
+      escreverConsole(destino, 'Confira a condição de parada (o i++ está lá? a condição chega a ficar falsa?).', 'err')
+    } else if (err instanceof SyntaxError){
+      escreverConsole(destino, '💥 Erro de sintaxe: ' + err.message, 'err')
+      escreverConsole(destino, 'Dica: confira chaves { }, parênteses ( ) e aspas que ficaram abertas.', 'err')
+    } else if (err instanceof ReferenceError){
+      escreverConsole(destino, '💥 ReferenceError: ' + err.message, 'err')
+      escreverConsole(destino, 'Dica: esse nome não existe aqui. Escreveu certo? A variável é local de outra função?', 'err')
+    } else if (err instanceof TypeError){
+      escreverConsole(destino, '💥 TypeError: ' + err.message, 'err')
+      escreverConsole(destino, 'Dica: você usou algo como se fosse outra coisa (ex.: chamar um número como função).', 'err')
+    } else {
+      escreverConsole(destino, '💥 ' + (err && err.message ? err.message : String(err)), 'err')
+    }
+  }
+  if (!destino.textContent) escreverConsole(destino, '(a execução terminou sem imprimir nada)', 'info')
+}
+
+/* ============================================================
+   SEÇÃO 2 — MÁQUINA DE SUCO
+   ============================================================ */
+;(function(){
+  var EMOJI = {laranja:'🍊', morango:'🍓', abacaxi:'🍍', uva:'🍇', manga:'🥭', 'limão':'🍋'}
+  var sel = $('selFruta')
+  function fazerSuco(fruta){ return 'Suco de ' + fruta }
+  function atualizar(){
+    var f = sel.value
+    $('frutaSvg').textContent = EMOJI[f] || '🍊'
+    $('sucoChamada').innerHTML = 'fazerSuco(<b>"' + escapar(f) + '"</b>)'
+    $('sucoSaida').textContent = '🥤 "' + fazerSuco(f) + '"'
+  }
+  sel.addEventListener('change', function(){ atualizar(); bater() })
+  function bater(){
+    var m = $('maquina')
+    m.classList.add('jorrando')
+    $('eng1').classList.add('rapida'); $('eng2').classList.add('rapida')
+    setTimeout(function(){
+      m.classList.remove('jorrando')
+      $('eng1').classList.remove('rapida'); $('eng2').classList.remove('rapida')
+    }, 2100)
+  }
+  $('btnBater').addEventListener('click', bater)
+  atualizar()
+})()
+
+/* ============================================================
+   SEÇÃO 3 — ANATOMIA
+   ============================================================ */
+;(function(){
+  var EXP = {
+    kw: ['A palavra <code>function</code>',
+      'É ela que avisa o JavaScript: "atenção, estou <b>criando</b> uma função aqui". Sem ela, o resto vira só código solto.'],
+    nome: ['O nome da função — <code>somar</code>',
+      'É por esse nome que você vai <b>chamar</b> a função depois. Escolha um nome que diga o que ela faz: <code>somar</code>, <code>areaCirculo</code>, <code>analisarIMC</code>. Use <i>camelCase</i>: primeira palavra minúscula, as seguintes com maiúscula.'],
+    par: ['Os parâmetros — <code>(a, b)</code>',
+      'São as "bocas" da função: nomes que vão receber os valores vindos de fora. Aqui <code>a</code> e <code>b</code> são <b>parâmetros</b>. Se a função não precisa receber nada, os parênteses ficam vazios: <code>()</code> — mas continuam obrigatórios.'],
+    chaveA: ['A chave que abre — <code>{</code>',
+      'Marca o <b>começo do corpo</b> da função. Tudo entre <code>{</code> e <code>}</code> é o que a função faz quando é chamada. Também é aqui que começa o <b>escopo local</b>.'],
+    ret: ['A palavra <code>return</code>',
+      'É o "copo de suco": ela <b>devolve</b> um valor para quem chamou a função e <b>encerra a função na hora</b> — qualquer linha depois do <code>return</code> não roda. Sem <code>return</code>, a função devolve <code>undefined</code>.'],
+    expr: ['A expressão devolvida — <code>a + b</code>',
+      'É a conta (ou o texto, ou a comparação) cujo <b>resultado</b> vai ser devolvido. O JavaScript calcula primeiro e devolve o valor final.'],
+    chaveF: ['A chave que fecha — <code>}</code>',
+      'Marca o <b>fim do corpo</b> da função. Esquecer de fechar é um dos erros mais comuns e gera <code>SyntaxError</code>. Dica: escreva as duas chaves juntas e só depois preencha o miolo.'],
+    chamada: ['A chamada — <code>somar(4, 6)</code>',
+      'Aqui a função finalmente <b>executa</b>. Os valores <code>4</code> e <code>6</code> são os <b>argumentos</b>: o 4 entra em <code>a</code> e o 6 entra em <code>b</code>, nessa ordem. O resultado devolvido é <code>10</code>.']
+  }
+  var caixa = $('anat-exp')
+  function mostrar(chave){
+    var e = EXP[chave]
+    if (!e) return
+    caixa.innerHTML = '<h4>' + e[0] + '</h4><p>' + e[1] + '</p>'
+  }
+  var pecas = document.querySelectorAll('.peca')
+  Array.prototype.forEach.call(pecas, function(p){
+    function ativar(){
+      Array.prototype.forEach.call(pecas, function(o){ o.classList.remove('ativa') })
+      p.classList.add('ativa')
+      mostrar(p.getAttribute('data-peca'))
+    }
+    p.addEventListener('click', ativar)
+    p.addEventListener('mouseenter', ativar)
+    p.addEventListener('focus', ativar)
+    p.addEventListener('keydown', function(ev){
+      if (ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); ativar() }
+    })
+  })
+})()
+
+/* ============================================================
+   SEÇÃO 4 — SEM PARÂMETRO
+   ============================================================ */
+var COD_SEM = {
+  ifal: 'function ifal() {\n    return "Instituto Federal de Alagoas"\n}\n\nconsole.log(ifal())',
+  linha: 'function linha() {\n    return "=".repeat(40)\n}\n\nconsole.log(linha())\nconsole.log("   INPR - Turma 911C")\nconsole.log(linha())',
+  dado: 'function sortearDado() {\n    return Math.floor(Math.random() * 6) + 1\n}\n\nconsole.log("🎲 Caiu:", sortearDado())'
+}
+;(function(){
+  var CARTOES = [
+    {id:'ifal', titulo:'🏫 ifal()', desc:'Devolve sempre a mesma frase. Não precisa de nada de fora.', cod:COD_SEM.ifal},
+    {id:'linha', titulo:'➖ linha()', desc:'Devolve uma linha de 40 sinais de igual, ótima para enfeitar a saída.', cod:COD_SEM.linha},
+    {id:'dado', titulo:'🎲 sortearDado()', desc:'Sem parâmetro, mas o resultado muda toda vez! Clique várias vezes.', cod:COD_SEM.dado}
+  ]
+  var alvo = $('cartoesSem')
+  CARTOES.forEach(function(c){
+    var div = criar('div', {class:'cartao'})
+    div.innerHTML =
+      '<h3>' + c.titulo + '</h3>' +
+      '<p style="font-size:.9rem;color:var(--txt2)">' + c.desc + '</p>' +
+      '<pre class="codigo">' + escapar(c.cod) + '</pre>' +
+      '<div class="linha-btns"><button class="btn ac pq" type="button">▶ Executar</button>' +
+      '<button class="btn sec pq" type="button">Limpar</button></div>' +
+      '<div class="console" aria-live="polite"></div>'
+    var botoes = div.querySelectorAll('button')
+    var cons = div.querySelector('.console')
+    botoes[0].addEventListener('click', function(){
+      executar(c.cod, cons, c.id === 'dado')
+    })
+    botoes[1].addEventListener('click', function(){ limparConsole(cons) })
+    alvo.appendChild(div)
+  })
+
+  $('btnSemParenteses').addEventListener('click', function(){
+    executar(
+      'function ifal() {\n    return "Instituto Federal de Alagoas"\n}\n\n' +
+      'console.log("SEM parênteses -> console.log(ifal):")\n' +
+      'console.log(ifal)\n' +
+      'console.log("")\n' +
+      'console.log("COM parênteses -> console.log(ifal()):")\n' +
+      'console.log(ifal())',
+      $('consSemPar'))
+  })
+})()
+
+/* ============================================================
+   SEÇÃO 5 — COM PARÂMETRO
+   ============================================================ */
+function analisarIMC(imc){
+  if (imc < 18.5) return "🔵BAIXO PESO"
+  else if (imc < 24.9) return "🟢PESO NORMAL"
+  else if (imc < 29.9) return "🟡SOBREPESO"
+  else if (imc < 35) return "🟠OBESIDADE"
+  else return "🟥OBESIDADE EXTREMA"
+}
+;(function(){
+  function num(v){ var n = Number(v); return isNaN(n) ? 0 : n }
+  var FUNCOES = [
+    {
+      titulo:'👋 saudar(nome)',
+      cod:'function saudar(nome) {\n    return `Bom dia, ${nome}!`\n}',
+      campos:[{id:'nome', rot:'nome', tipo:'text', val:'turma 911C'}],
+      chamada:function(v){ return 'saudar(<b>"' + escapar(v.nome) + '"</b>)' },
+      calc:function(v){ return '"Bom dia, ' + v.nome + '!"' }
+    },
+    {
+      titulo:'➕ somar(a, b)',
+      cod:'function somar(a, b) {\n    return a + b\n}',
+      campos:[{id:'a', rot:'a', tipo:'number', val:'4'},{id:'b', rot:'b', tipo:'number', val:'6'}],
+      chamada:function(v){ return 'somar(<b>' + num(v.a) + '</b>, <b>' + num(v.b) + '</b>)' },
+      calc:function(v){ return String(num(v.a) + num(v.b)) }
+    },
+    {
+      titulo:'⭕ areaCirculo(raio)',
+      cod:'function areaCirculo(raio) {\n    return Math.PI * raio ** 2\n}',
+      campos:[{id:'raio', rot:'raio', tipo:'number', val:'6'}],
+      chamada:function(v){ return 'areaCirculo(<b>' + num(v.raio) + '</b>)' },
+      calc:function(v){ return String(Math.PI * Math.pow(num(v.raio), 2)) }
+    },
+    {
+      titulo:'🌡️ celsiusParaFahrenheit(c)',
+      cod:'function celsiusParaFahrenheit(c) {\n    return c * 9 / 5 + 32\n}',
+      campos:[{id:'c', rot:'c (°C)', tipo:'number', val:'30'}],
+      chamada:function(v){ return 'celsiusParaFahrenheit(<b>' + num(v.c) + '</b>)' },
+      calc:function(v){ return String(num(v.c) * 9 / 5 + 32) + ' °F' }
+    },
+    {
+      titulo:'🏷️ precoComDesconto(preco, desconto)',
+      cod:'function precoComDesconto(preco, desconto) {\n    return preco - preco * desconto / 100\n}',
+      campos:[{id:'preco', rot:'preço (R$)', tipo:'number', val:'250'},{id:'desconto', rot:'desconto (%)', tipo:'number', val:'20'}],
+      chamada:function(v){ return 'precoComDesconto(<b>' + num(v.preco) + '</b>, <b>' + num(v.desconto) + '</b>)' },
+      calc:function(v){ var p = num(v.preco), d = num(v.desconto); return 'R$ ' + (p - p * d / 100).toFixed(2) }
+    },
+    {
+      titulo:'⚖️ IMC(peso, altura) + analisarIMC(imc)',
+      cod:'function IMC(peso, altura) {\n    return peso / altura ** 2\n}\n\nfunction analisarIMC(imc) {\n    if (imc < 18.5)\n        return "🔵BAIXO PESO"\n    else if (imc < 24.9)\n        return "🟢PESO NORMAL"\n    else if (imc < 29.9)\n        return "🟡SOBREPESO"\n    else if (imc < 35)\n        return "🟠OBESIDADE"\n    else\n        return "🟥OBESIDADE EXTREMA"\n}',
+      campos:[{id:'peso', rot:'peso (kg)', tipo:'number', val:'70'},{id:'altura', rot:'altura (m)', tipo:'number', val:'1.75'}],
+      chamada:function(v){ return 'analisarIMC(IMC(<b>' + num(v.peso) + '</b>, <b>' + num(v.altura) + '</b>))' },
+      calc:function(v){
+        var a = num(v.altura)
+        if (!a) return 'Infinity — divisão por zero!'
+        var imc = num(v.peso) / (a * a)
+        return imc.toFixed(2) + ' → ' + analisarIMC(imc)
+      }
+    }
+  ]
+
+  var alvo = $('cartoesCom')
+  FUNCOES.forEach(function(f, idx){
+    var div = criar('div', {class:'cartao'})
+    var htmlCampos = f.campos.map(function(c, i){
+      return '<label class="campo">' + c.rot +
+        ' <input type="' + c.tipo + '" step="any" data-k="' + c.id + '" value="' + c.val + '" aria-label="' + c.rot + '"></label>'
+    }).join('')
+    div.innerHTML =
+      '<h3>' + f.titulo + '</h3>' +
+      '<pre class="codigo">' + escapar(f.cod) + '</pre>' +
+      '<div class="entradas">' + htmlCampos + '</div>' +
+      '<div class="chamada"></div>' +
+      '<p style="font-size:.8rem;color:var(--txt2);margin:.1rem 0 0">devolve ➜</p>' +
+      '<p class="retorno"></p>'
+    var inputs = div.querySelectorAll('input')
+    var elChamada = div.querySelector('.chamada')
+    var elRet = div.querySelector('.retorno')
+    function atualizar(){
+      var v = {}
+      Array.prototype.forEach.call(inputs, function(i){ v[i.getAttribute('data-k')] = i.value })
+      elChamada.innerHTML = f.chamada(v)
+      elRet.textContent = f.calc(v)
+    }
+    Array.prototype.forEach.call(inputs, function(i){ i.addEventListener('input', atualizar) })
+    alvo.appendChild(div)
+    atualizar()
+  })
+
+  // encadeamento
+  function attEnc(){
+    var p = $('encPeso').value, a = $('encAltura').value
+    $('encChamada').innerHTML = 'console.log(analisarIMC(IMC(<b>' + escapar(p) + '</b>, <b>' + escapar(a) + '</b>)))'
+  }
+  $('encPeso').addEventListener('input', attEnc)
+  $('encAltura').addEventListener('input', attEnc)
+  attEnc()
+  $('btnEnc').addEventListener('click', function(){
+    var p = Number($('encPeso').value) || 0
+    var a = Number($('encAltura').value) || 0
+    var cod =
+      'function IMC(peso, altura) {\n    return peso / altura ** 2\n}\n' +
+      'function analisarIMC(imc) {\n' +
+      '    if (imc < 18.5) return "🔵BAIXO PESO"\n' +
+      '    else if (imc < 24.9) return "🟢PESO NORMAL"\n' +
+      '    else if (imc < 29.9) return "🟡SOBREPESO"\n' +
+      '    else if (imc < 35) return "🟠OBESIDADE"\n' +
+      '    else return "🟥OBESIDADE EXTREMA"\n' +
+      '}\n' +
+      'let peso = ' + p + '\n' +
+      'let altura = ' + a + '\n' +
+      'console.log("1) IMC(peso, altura) devolve:", IMC(peso, altura))\n' +
+      'console.log("2) esse número entra em analisarIMC:")\n' +
+      'console.log(analisarIMC(IMC(peso, altura)))'
+    executar(cod, $('consEnc'))
+  })
+})()
+
+/* ============================================================
+   SEÇÃO 6 — ORDEM DOS ARGUMENTOS (estacao real do professor)
+   ============================================================ */
+function estacao(dia, mes){
+  if ((mes == 9 && dia > 21) || mes == 10 || mes == 11 || (mes == 12 && dia < 21))
+    return "💐 PRIMAVERA"
+  if ((mes == 12 && dia >= 21) || mes == 1 || mes == 2 || (mes == 3 && dia < 20))
+    return "☀️ VERÃO"
+  if ((mes == 3 && dia >= 20) || mes == 4 || mes == 5 || (mes == 6 && dia < 21))
+    return "🍂 OUTONO"
+  if ((mes == 6 && dia >= 21) || mes == 7 || mes == 8 || (mes == 9 && dia <= 21))
+    return "☂️ INVERNO"
+}
+;(function(){
+  function att(){
+    var d = Number($('estDia').value)
+    var m = Number($('estMes').value)
+    var certo = estacao(d, m)
+    var errado = estacao(m, d)
+    $('ordemCertaChamada').innerHTML = 'estacao(<b>' + d + '</b>, <b>' + m + '</b>)'
+    $('ordemCertaRet').textContent = certo === undefined ? 'undefined' : certo
+    $('ordemCertaTxt').innerHTML = 'dia = ' + d + ', mes = ' + m + ' → dia ' + d + ' do mês ' + m + '.' +
+      (certo === undefined ? ' <b>Nenhum if foi verdadeiro</b> — confira se o dia/mês existe.' : '')
+    $('ordemErradaChamada').innerHTML = 'estacao(<b>' + m + '</b>, <b>' + d + '</b>)'
+    $('ordemErradaRet').textContent = errado === undefined ? 'undefined' : errado
+    $('ordemErradaTxt').innerHTML = 'dia = ' + m + ', mes = ' + d + ' → ' +
+      (errado === undefined
+        ? 'não existe essa combinação! Nenhum <code>if</code> foi verdadeiro, a função terminou sem <code>return</code> e devolveu <code>undefined</code>.'
+        : 'a função até respondeu, mas respondeu sobre uma data que você <b>não</b> pediu. Resposta errada em silêncio!')
+  }
+  $('estDia').addEventListener('input', att)
+  $('estMes').addEventListener('input', att)
+  $('btnEstacao').addEventListener('click', att)
+  $('btnInverter').addEventListener('click', function(){
+    var d = $('estDia').value
+    $('estDia').value = $('estMes').value
+    $('estMes').value = d
+    att()
+  })
+  att()
+})()
+
+/* ============================================================
+   SEÇÕES 7 e 8 — botões [data-run]
+   ============================================================ */
+var CODIGOS_RUN = {
+  ret1:
+    'function somaComRetorno(a, b) {\n    return a + b\n}\n\n' +
+    'let r1 = somaComRetorno(2, 3)\n' +
+    'console.log("r1 vale:", r1)\n' +
+    'console.log("dá para usar numa conta:", somaComRetorno(2, 3) * 10)\n' +
+    'console.log("dá para encadear:", somaComRetorno(somaComRetorno(1, 1), 8))',
+  ret2:
+    'function somaQueSoImprime(a, b) {\n    console.log(a + b)\n}\n\n' +
+    'let r2 = somaQueSoImprime(2, 3)\n' +
+    'console.log("r2 vale:", r2)\n' +
+    'console.log("na conta vira:", somaQueSoImprime(2, 3) * 10)',
+  escopoOk:
+    'let nomeDaTurma = "911C"\n\n' +
+    'function calcularTotal(preco) {\n' +
+    '    let imposto = preco * 0.1\n' +
+    '    console.log("dentro da função dá para ver nomeDaTurma:", nomeDaTurma)\n' +
+    '    console.log("e também o imposto local:", imposto)\n' +
+    '    return preco + imposto\n' +
+    '}\n\n' +
+    'console.log("total:", calcularTotal(100))',
+  escopoCopia:
+    'function dobrar(n) {\n    n = n * 2\n    return n\n}\n\n' +
+    'let valor = 5\n' +
+    'console.log("dobrar(valor) devolve:", dobrar(valor))\n' +
+    'console.log("mas valor continua:", valor)'
+}
+;(function(){
+  var mapa = {ret1:'consRet1', ret2:'consRet2', escopoOk:'consEscopo', escopoCopia:'consCopia'}
+  Array.prototype.forEach.call(document.querySelectorAll('[data-run]'), function(b){
+    b.addEventListener('click', function(){
+      var k = b.getAttribute('data-run')
+      executar(CODIGOS_RUN[k], $(mapa[k]))
+    })
+  })
+  $('btnEscopoErro').addEventListener('click', function(){
+    $('caixaFuncao').classList.remove('tremendo')
+    void $('caixaFuncao').offsetWidth
+    $('caixaFuncao').classList.add('tremendo')
+    executar(
+      'function calcularTotal(preco) {\n' +
+      '    let imposto = preco * 0.1\n' +
+      '    return preco + imposto\n' +
+      '}\n\n' +
+      'console.log(calcularTotal(100))\n' +
+      'console.log(imposto)   // 💥 imposto só existe DENTRO da função',
+      $('consEscopo'))
+  })
+})()
+
+/* ============================================================
+   GALERIA DE EXEMPLOS
+   ============================================================ */
+function real(n){ return Math.round(n * 100) / 100 }
+function reais(n){ return 'R$ ' + n.toFixed(2).replace('.', ',') }
+
+/* --- funções da galeria (as mesmas que aparecem no código) --- */
+function caraOuCoroa(){ return Math.random() < 0.5 ? "🪙 CARA" : "🪙 COROA" }
+function emojiDoDia(){
+  var emojis = ["🚀", "🍕", "🎧", "⚽", "📚", "🐢", "🌻"]
+  return emojis[Math.floor(Math.random() * emojis.length)]
+}
+function cabecalho(){ return "=".repeat(40) + "\n   IFAL — INPR — turma 911C\n" + "=".repeat(40) }
+function senhaAleatoria(){ return Math.floor(Math.random() * 900000) + 100000 }
+function menu(){ return "1) Cadastrar\n2) Listar\n3) Sair" }
+
+function nivelDaBateria(porcentagem){
+  if (porcentagem >= 80) return "🔋 CHEIA"
+  else if (porcentagem >= 40) return "🔋 BOA"
+  else if (porcentagem >= 20) return "🪫 BAIXA"
+  else return "🪫 CRÍTICA — carregue agora!"
+}
+function notaParaConceito(nota){
+  if (nota >= 9) return "A — excelente"
+  else if (nota >= 7) return "B — bom"
+  else if (nota >= 6) return "C — suficiente"
+  else return "D — precisa melhorar"
+}
+function tempoDeTela(minutos){
+  var horas = Math.floor(minutos / 60)
+  var resto = minutos % 60
+  return horas + 'h' + resto + 'min de tela hoje'
+}
+function ehBissexto(ano){ return (ano % 4 == 0 && ano % 100 != 0) || ano % 400 == 0 }
+function parOuImpar(n){ return n % 2 == 0 ? "PAR" : "ÍMPAR" }
+function iniciais(nome){ return nome[0].toUpperCase() + "." }
+function legendaCabe(texto){
+  return texto.length <= 280 ? '✅ cabe (' + texto.length + '/280)' : '❌ passou (' + texto.length + '/280)'
+}
+function barraDeProgresso(percentual){
+  var cheios = Math.round(percentual / 10)
+  return "█".repeat(cheios) + "░".repeat(10 - cheios) + ' ' + percentual + '%'
+}
+function frequencia(presencas, totalDeAulas){ return presencas / totalDeAulas * 100 }
+function aprovadoPorFrequencia(percentual){
+  return percentual >= 75 ? "✅ APROVADO na frequência" : "❌ REPROVADO por falta"
+}
+function dividirConta(total, pessoas){ return total / pessoas }
+function trocoF(valorPago, valorDaCompra){ return valorPago - valorDaCompra }
+function pontosDoTime(vitorias, empates){ return vitorias * 3 + empates }
+function velocidadeMedia(distancia, tempo){ return distancia / tempo }
+function consumoDeAgua(litrosPorDia, dias){ return litrosPorDia * dias }
+function montante(capital, taxa, tempo){ return capital * (1 + taxa / 100 * tempo) }
+function precoPorGrama(preco, gramas){ return preco / gramas }
+
+var GALERIA = [
+  /* ---------- SEM PARÂMETRO ---------- */
+  {cat:'sem', nome:'caraOuCoroa()', desc:'Sorteia cara ou coroa. Clique várias vezes: muda toda vez!',
+   cod:'function caraOuCoroa() {\n    return Math.random() < 0.5 ? "🪙 CARA" : "🪙 COROA"\n}',
+   args:[], fn:function(){ return caraOuCoroa() }, acumula:true},
+  {cat:'sem', nome:'emojiDoDia()', desc:'Sorteia um emoji de uma lista. Sem entrada nenhuma.',
+   cod:'function emojiDoDia() {\n    let emojis = ["🚀", "🍕", "🎧", "⚽", "📚", "🐢", "🌻"]\n    return emojis[Math.floor(Math.random() * emojis.length)]\n}',
+   args:[], fn:function(){ return emojiDoDia() }, acumula:true},
+  {cat:'sem', nome:'cabecalho()', desc:'Devolve o cabeçalho bonitinho da turma, em 3 linhas.',
+   cod:'function cabecalho() {\n    return `${"=".repeat(40)}\\n   IFAL — INPR — turma 911C\\n${"=".repeat(40)}`\n}',
+   args:[], fn:function(){ return cabecalho() }},
+  {cat:'sem', nome:'senhaAleatoria()', desc:'Gera um código de 6 dígitos, tipo os que chegam por SMS.',
+   cod:'function senhaAleatoria() {\n    return Math.floor(Math.random() * 900000) + 100000\n}',
+   args:[], fn:function(){ return senhaAleatoria() }, acumula:true},
+  {cat:'sem', nome:'menu()', desc:'Devolve o texto do menu do programa. Clássico dos exercícios.',
+   cod:'function menu() {\n    return "1) Cadastrar\\n2) Listar\\n3) Sair"\n}',
+   args:[], fn:function(){ return menu() }},
+
+  /* ---------- UM PARÂMETRO ---------- */
+  {cat:'um', nome:'nivelDaBateria(porcentagem)', desc:'Arraste o slider e veja a classificação mudar nos limites 80, 40 e 20.',
+   cod:'function nivelDaBateria(porcentagem) {\n    if (porcentagem >= 80) return "🔋 CHEIA"\n    else if (porcentagem >= 40) return "🔋 BOA"\n    else if (porcentagem >= 20) return "🪫 BAIXA"\n    else return "🪫 CRÍTICA — carregue agora!"\n}',
+   args:[{rot:'porcentagem', tipo:'range', val:65, min:0, max:100, passo:1}],
+   fn:function(p){ return nivelDaBateria(p) }, aoVivo:true},
+  {cat:'um', nome:'notaParaConceito(nota)', desc:'Converte a nota numérica no conceito A, B, C ou D.',
+   cod:'function notaParaConceito(nota) {\n    if (nota >= 9) return "A — excelente"\n    else if (nota >= 7) return "B — bom"\n    else if (nota >= 6) return "C — suficiente"\n    else return "D — precisa melhorar"\n}',
+   args:[{rot:'nota', tipo:'number', val:8.5, passo:0.1}],
+   fn:function(n){ return notaParaConceito(n) }, aoVivo:true},
+  {cat:'um', nome:'tempoDeTela(minutos)', desc:'Transforma minutos em horas + minutos. Usa Math.floor e o resto da divisão (%).',
+   cod:'function tempoDeTela(minutos) {\n    let horas = Math.floor(minutos / 60)\n    let resto = minutos % 60\n    return `${horas}h${resto}min de tela hoje`\n}',
+   args:[{rot:'minutos', tipo:'number', val:195, passo:1}],
+   fn:function(m){ return tempoDeTela(m) }, aoVivo:true},
+  {cat:'um', nome:'ehBissexto(ano)', desc:'Devolve true ou false — funções também podem devolver booleanos!',
+   cod:'function ehBissexto(ano) {\n    return (ano % 4 == 0 && ano % 100 != 0) || ano % 400 == 0\n}',
+   args:[{rot:'ano', tipo:'number', val:2024, passo:1}],
+   fn:function(a){ return ehBissexto(a) }, aoVivo:true},
+  {cat:'um', nome:'parOuImpar(n)', desc:'O operador ternário ( ? : ) é um if/else escrito numa linha só.',
+   cod:'function parOuImpar(n) {\n    return n % 2 == 0 ? "PAR" : "ÍMPAR"\n}',
+   args:[{rot:'n', tipo:'number', val:7, passo:1}],
+   fn:function(n){ return parOuImpar(n) }, aoVivo:true},
+  {cat:'um', nome:'iniciais(nome)', desc:'Pega a primeira letra do nome e coloca um ponto.',
+   cod:'function iniciais(nome) {\n    return nome[0].toUpperCase() + "."\n}',
+   args:[{rot:'nome', tipo:'text', val:'augusto'}],
+   fn:function(s){ return s ? iniciais(s) : '(digite um nome)' }, aoVivo:true},
+  {cat:'um', nome:'legendaCabe(texto)', desc:'Conta os caracteres e diz se a legenda cabe no limite de 280.',
+   cod:'function legendaCabe(texto) {\n    return texto.length <= 280\n        ? `✅ cabe (${texto.length}/280)`\n        : `❌ passou (${texto.length}/280)`\n}',
+   args:[{rot:'texto', tipo:'text', val:'Hoje teve aula de funções no IFAL 💻'}],
+   fn:function(t){ return legendaCabe(t) }, aoVivo:true},
+  {cat:'um', nome:'barraDeProgresso(percentual)', desc:'Desenha uma barra com blocos cheios e vazios. Arraste!',
+   cod:'function barraDeProgresso(percentual) {\n    let cheios = Math.round(percentual / 10)\n    return "█".repeat(cheios) + "░".repeat(10 - cheios) + ` ${percentual}%`\n}',
+   args:[{rot:'percentual', tipo:'range', val:70, min:0, max:100, passo:5}],
+   fn:function(p){ return barraDeProgresso(p) }, aoVivo:true},
+
+  /* ---------- DOIS OU MAIS PARÂMETROS ---------- */
+  {cat:'mais', nome:'frequencia() + aprovadoPorFrequencia()', desc:'Duas funções encadeadas: uma calcula o percentual, a outra classifica.',
+   cod:'function frequencia(presencas, totalDeAulas) {\n    return presencas / totalDeAulas * 100\n}\n\nfunction aprovadoPorFrequencia(percentual) {\n    return percentual >= 75\n        ? "✅ APROVADO na frequência"\n        : "❌ REPROVADO por falta"\n}',
+   args:[{rot:'presenças', tipo:'number', val:62, passo:1},{rot:'total de aulas', tipo:'number', val:80, passo:1}],
+   chamada:function(v){ return 'aprovadoPorFrequencia(frequencia(' + v[0] + ', ' + v[1] + '))' },
+   fn:function(p, t){
+     if (!t) return 'Divisão por zero! O total de aulas não pode ser 0.'
+     var f = frequencia(p, t)
+     return f.toFixed(1) + '% → ' + aprovadoPorFrequencia(f)
+   }, aoVivo:true},
+  {cat:'mais', nome:'dividirConta(total, pessoas)', desc:'A conta do lanche dividida. Cuidado com a ORDEM dos argumentos!',
+   cod:'function dividirConta(total, pessoas) {\n    return total / pessoas\n}',
+   args:[{rot:'total (R$)', tipo:'number', val:200, passo:0.5},{rot:'pessoas', tipo:'number', val:4, passo:1}],
+   fn:function(t, p){ return p ? reais(dividirConta(t, p)) + ' para cada um' : 'Ninguém para dividir? 🤔' }, aoVivo:true},
+  {cat:'mais', nome:'troco(valorPago, valorDaCompra)', desc:'Quanto volta de troco. Inverta os valores e veja o número negativo.',
+   cod:'function troco(valorPago, valorDaCompra) {\n    return valorPago - valorDaCompra\n}',
+   args:[{rot:'valor pago (R$)', tipo:'number', val:50, passo:0.5},{rot:'valor da compra (R$)', tipo:'number', val:33.5, passo:0.5}],
+   fn:function(a, b){
+     var t = trocoF(a, b)
+     return reais(t) + (t < 0 ? ' 😬 faltou dinheiro!' : '')
+   }, aoVivo:true},
+  {cat:'mais', nome:'pontosDoTime(vitorias, empates)', desc:'Vitória vale 3, empate vale 1. Tabela do campeonato!',
+   cod:'function pontosDoTime(vitorias, empates) {\n    return vitorias * 3 + empates\n}',
+   args:[{rot:'vitórias', tipo:'number', val:7, passo:1},{rot:'empates', tipo:'number', val:3, passo:1}],
+   fn:function(v, e){ return pontosDoTime(v, e) + ' pontos ⚽' }, aoVivo:true},
+  {cat:'mais', nome:'velocidadeMedia(distancia, tempo)', desc:'Física na veia: distância dividida pelo tempo.',
+   cod:'function velocidadeMedia(distancia, tempo) {\n    return distancia / tempo\n}',
+   args:[{rot:'distância (km)', tipo:'number', val:120, passo:1},{rot:'tempo (h)', tipo:'number', val:2, passo:0.25}],
+   fn:function(d, t){ return t ? real(velocidadeMedia(d, t)) + ' km/h' : 'Tempo zero não dá! 🚫' }, aoVivo:true},
+  {cat:'mais', nome:'consumoDeAgua(litrosPorDia, dias)', desc:'Quanto de água a sua casa gasta num período.',
+   cod:'function consumoDeAgua(litrosPorDia, dias) {\n    return litrosPorDia * dias\n}',
+   args:[{rot:'litros por dia', tipo:'number', val:150, passo:1},{rot:'dias', tipo:'number', val:30, passo:1}],
+   fn:function(l, d){ return consumoDeAgua(l, d) + ' litros 💧' }, aoVivo:true},
+  {cat:'mais', nome:'montante(capital, taxa, tempo)', desc:'Três parâmetros! Juros simples: quanto o dinheiro rende.',
+   cod:'function montante(capital, taxa, tempo) {\n    return capital * (1 + taxa / 100 * tempo)\n}',
+   args:[{rot:'capital (R$)', tipo:'number', val:1000, passo:10},{rot:'taxa (% ao mês)', tipo:'number', val:2, passo:0.1},{rot:'tempo (meses)', tipo:'number', val:12, passo:1}],
+   fn:function(c, t, m){ return reais(montante(c, t, m)) }, aoVivo:true},
+  {cat:'mais', nome:'precoPorGrama(preco, gramas)', desc:'Descobre qual embalagem vale mais a pena no mercado.',
+   cod:'function precoPorGrama(preco, gramas) {\n    return preco / gramas\n}',
+   args:[{rot:'preço (R$)', tipo:'number', val:12.9, passo:0.1},{rot:'gramas', tipo:'number', val:500, passo:10}],
+   fn:function(p, g){ return g ? 'R$ ' + precoPorGrama(p, g).toFixed(4).replace('.', ',') + ' por grama' : '—' }, aoVivo:true}
+]
+;(function(){
+  var CATS = [
+    {id:'todos', rot:'Todos (' + GALERIA.length + ')'},
+    {id:'sem', rot:'Sem parâmetro'},
+    {id:'um', rot:'1 parâmetro'},
+    {id:'mais', rot:'2+ parâmetros'}
+  ]
+  var NOMES_CAT = {sem:'sem parâmetro', um:'1 parâmetro', mais:'2+ parâmetros'}
+  var filtroAtual = 'todos'
+  var caixaFiltros = $('filtrosGaleria')
+  var caixaGaleria = $('galeria')
+
+  CATS.forEach(function(c){
+    var b = criar('button', {type:'button', 'aria-pressed': c.id === 'todos' ? 'true' : 'false', 'data-cat': c.id}, c.rot)
+    b.addEventListener('click', function(){
+      filtroAtual = c.id
+      Array.prototype.forEach.call(caixaFiltros.children, function(o){
+        o.setAttribute('aria-pressed', o.getAttribute('data-cat') === filtroAtual ? 'true' : 'false')
+      })
+      aplicarFiltro()
+    })
+    caixaFiltros.appendChild(b)
+  })
+  function aplicarFiltro(){
+    Array.prototype.forEach.call(caixaGaleria.children, function(el){
+      var ok = filtroAtual === 'todos' || el.getAttribute('data-cat') === filtroAtual
+      el.style.display = ok ? 'flex' : 'none'
+    })
+  }
+
+  function valorDoCampo(inp, tipo){
+    if (tipo === 'text') return inp.value
+    var n = Number(inp.value)
+    return isNaN(n) ? 0 : n
+  }
+  function comoArgumento(v, tipo){
+    return tipo === 'text' ? '"' + v + '"' : String(v)
+  }
+
+  GALERIA.forEach(function(ex){
+    var div = criar('div', {class:'cartao', 'data-cat': ex.cat})
+    var htmlArgs = ex.args.map(function(a, i){
+      if (a.tipo === 'range'){
+        return '<label class="campo">' + a.rot +
+          '<span class="slider-linha"><input type="range" data-i="' + i + '" min="' + a.min + '" max="' + a.max +
+          '" step="' + a.passo + '" value="' + a.val + '" aria-label="' + a.rot + '">' +
+          '<span class="slider-valor">' + a.val + '</span></span></label>'
+      }
+      return '<label class="campo">' + a.rot + ' <input type="' + a.tipo + '" data-i="' + i + '"' +
+        (a.tipo === 'number' ? ' step="' + (a.passo || 'any') + '"' : '') +
+        ' value="' + String(a.val).replace(/"/g,'&quot;') + '" aria-label="' + a.rot + '"></label>'
+    }).join('')
+
+    div.innerHTML =
+      '<h3 style="font-size:1rem">' + escapar(ex.nome) + '<span class="tag-cat">' + NOMES_CAT[ex.cat] + '</span></h3>' +
+      '<p style="font-size:.85rem;color:var(--txt2)">' + ex.desc + '</p>' +
+      '<pre class="codigo">' + escapar(ex.cod) + '</pre>' +
+      (htmlArgs ? '<div class="entradas">' + htmlArgs + '</div>' : '') +
+      '<div class="chamada"></div>' +
+      '<button class="btn ac pq" type="button">▶ Executar</button>' +
+      '<div class="saida-mono">—</div>'
+
+    var inputs = div.querySelectorAll('input')
+    var elChamada = div.querySelector('.chamada')
+    var elSaida = div.querySelector('.saida-mono')
+    var btn = div.querySelector('button')
+
+    function valores(){
+      var vs = []
+      Array.prototype.forEach.call(inputs, function(inp){
+        var i = Number(inp.getAttribute('data-i'))
+        vs[i] = valorDoCampo(inp, ex.args[i].tipo)
+      })
+      return vs
+    }
+    function attChamada(){
+      var vs = valores()
+      var texto = ex.chamada
+        ? ex.chamada(vs)
+        : ex.nome.split('(')[0] + '(' + vs.map(function(v, i){ return comoArgumento(v, ex.args[i].tipo) }).join(', ') + ')'
+      elChamada.innerHTML = '<b>' + escapar(texto) + '</b>'
+      // slider: mostrar valor
+      Array.prototype.forEach.call(inputs, function(inp){
+        if (inp.type === 'range'){
+          var span = inp.parentNode.querySelector('.slider-valor')
+          if (span) span.textContent = inp.value
+        }
+      })
+    }
+    function rodar(){
+      var vs = valores()
+      var r
+      try { r = ex.fn.apply(null, vs) } catch(e){ r = '💥 ' + e.message }
+      var linha = '➜ ' + formatar(r)
+      if (ex.acumula){
+        var antigo = elSaida.textContent === '—' ? '' : elSaida.textContent
+        var linhas = (linha + (antigo ? '\n' + antigo : '')).split('\n').slice(0, 5)
+        elSaida.textContent = linhas.join('\n')
+      } else {
+        elSaida.textContent = linha
+      }
+    }
+    Array.prototype.forEach.call(inputs, function(inp){
+      inp.addEventListener('input', function(){
+        attChamada()
+        if (ex.aoVivo) rodar()
+      })
+    })
+    btn.addEventListener('click', rodar)
+    caixaGaleria.appendChild(div)
+    attChamada()
+    if (ex.aoVivo) rodar()
+  })
+  aplicarFiltro()
+})()
+
+/* ============================================================
+   A MESMA FUNÇÃO EM 4 VERSÕES
+   ============================================================ */
+;(function(){
+  function areaDoQuadrado1(){ return 5 * 5 }
+  function areaDoQuadrado2(lado){ return lado * lado }
+  function areaDoQuadrado4(lado){ return lado * lado }
+  function classificarArea(area){ return area > 100 ? "GRANDE" : "PEQUENA" }
+
+  var LINHAS = [
+    {v:1, nome:'❶ sem parâmetro, valor fixo', cels:['❌ não — só serve para o lado 5','❌ não recebe nada','✅ sim (sempre 25)','⚠️ tecnicamente sim, mas inútil']},
+    {v:2, nome:'❷ com parâmetro', cels:['✅ sim — qualquer lado','✅ sim, o parâmetro <code>lado</code>','✅ sim, com <code>return</code>','✅ sim']},
+    {v:3, nome:'❸ sem return, só imprime', cels:['✅ roda para qualquer lado','✅ sim, o parâmetro <code>lado</code>','❌ não — devolve <code>undefined</code>','❌ não dá para encadear']},
+    {v:4, nome:'❹ parâmetro + return + encadeada', cels:['✅ sim','✅ sim','✅ sim','🏆 sim — e já está encadeada!']}
+  ]
+  var corpo = document.querySelector('#tabelaVersoes tbody')
+  function montarTabela(){
+    corpo.innerHTML = LINHAS.map(function(l){
+      return '<tr data-v="' + l.v + '"><td><b>' + l.nome + '</b></td>' +
+        l.cels.map(function(){ return '<td class="cel-oculta">clique em Executar</td>' }).join('') + '</tr>'
+    }).join('')
+  }
+  function revelar(v){
+    var tr = corpo.querySelector('tr[data-v="' + v + '"]')
+    if (!tr) return
+    var l = LINHAS.filter(function(x){ return x.v === v })[0]
+    Array.prototype.forEach.call(tr.querySelectorAll('td'), function(td, i){
+      if (i === 0) return
+      td.classList.remove('cel-oculta')
+      td.classList.add('cel-revelada')
+      td.innerHTML = l.cels[i-1]
+    })
+  }
+  montarTabela()
+
+  var range = $('ladoRange')
+  function lado(){ return Number(range.value) }
+  function att(){
+    $('ladoValor').textContent = range.value
+    var L = lado()
+    document.querySelector('[data-chamada="2"]').textContent = 'areaDoQuadrado2(' + L + ')'
+    document.querySelector('[data-chamada="3"]').textContent = 'let x = areaDoQuadrado3(' + L + ')'
+    document.querySelector('[data-chamada="4"]').textContent = 'classificarArea(areaDoQuadrado4(' + L + '))'
+  }
+  range.addEventListener('input', att)
+  att()
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-exec]'), function(b){
+    b.addEventListener('click', function(){
+      var v = Number(b.getAttribute('data-exec'))
+      var L = lado()
+      var alvo = document.querySelector('[data-saida="' + v + '"]')
+      if (v === 1) alvo.textContent = '➜ devolve ' + areaDoQuadrado1() + '  (o lado ' + L + ' foi ignorado 😐)'
+      if (v === 2) alvo.textContent = '➜ devolve ' + areaDoQuadrado2(L)
+      if (v === 3) alvo.textContent = 'na tela apareceu: ' + (L * L) + '\n➜ mas x vale undefined'
+      if (v === 4) alvo.textContent = 'areaDoQuadrado4(' + L + ') ➜ ' + areaDoQuadrado4(L) +
+        '\nclassificarArea(' + areaDoQuadrado4(L) + ') ➜ ' + classificarArea(areaDoQuadrado4(L))
+      revelar(v)
+    })
+  })
+  $('btnRevelarVersoes').addEventListener('click', function(){ [1,2,3,4].forEach(revelar) })
+  $('btnZerarVersoes').addEventListener('click', function(){
+    montarTabela()
+    Array.prototype.forEach.call(document.querySelectorAll('[data-saida]'), function(e){ e.textContent = '—' })
+  })
+})()
+
+/* ============================================================
+   MINI-PROJETOS
+   ============================================================ */
+var PROJETOS = [
+  {
+    id:'E1', titulo:'📋 Boletim escolar',
+    desc:'Três funções: uma calcula a média, outra decide a situação, e a terceira junta tudo num texto bonito.',
+    cod:'function media(n1, n2, n3) {\n    return (n1 + n2 + n3) / 3\n}\n\n' +
+        'function situacao(m) {\n    if (m >= 6) return "✅ APROVADO"\n    else if (m >= 4) return "🟡 RECUPERAÇÃO"\n    else return "❌ REPROVADO"\n}\n\n' +
+        'function boletim(nome, n1, n2, n3) {\n    let m = media(n1, n2, n3)\n    return `${nome} — média ${m.toFixed(1)} — ${situacao(m)}`\n}\n\n' +
+        'console.log(boletim("Ana", 8, 7, 9))',
+    nos:['boletim(nome, n1, n2, n3)','media(n1, n2, n3)','situacao(m)'],
+    campos:[{id:'nome', rot:'nome', tipo:'text', val:'Ana'},
+            {id:'n1', rot:'nota 1', tipo:'number', val:8, passo:0.1},
+            {id:'n2', rot:'nota 2', tipo:'number', val:7, passo:0.1},
+            {id:'n3', rot:'nota 3', tipo:'number', val:9, passo:0.1}],
+    exec:function(v){
+      function media(a,b,c){ return (a+b+c)/3 }
+      function situacao(m){ if (m >= 6) return "✅ APROVADO"; else if (m >= 4) return "🟡 RECUPERAÇÃO"; else return "❌ REPROVADO" }
+      var n1 = Number(v.n1)||0, n2 = Number(v.n2)||0, n3 = Number(v.n3)||0
+      var m = media(n1, n2, n3)
+      var s = situacao(m)
+      return [
+        {no:0, txt:'chamando boletim("' + v.nome + '", ' + n1 + ', ' + n2 + ', ' + n3 + ')'},
+        {no:1, txt:'boletim chama media(' + n1 + ', ' + n2 + ', ' + n3 + ') ➜ ' + m.toFixed(1)},
+        {no:2, txt:'boletim chama situacao(' + m.toFixed(1) + ') ➜ ' + s},
+        {no:0, txt:'boletim devolve ➜ ' + v.nome + ' — média ' + m.toFixed(1) + ' — ' + s}
+      ]
+    }
+  },
+  {
+    id:'E2', titulo:'🍔 Lanchonete do IFAL',
+    desc:'Fecha um pedido completo: descobre o preço do item, calcula o total e devolve o troco.',
+    cod:'function precoDoLanche(item) {\n' +
+        '    if (item == "coxinha") return 6.50\n' +
+        '    else if (item == "pastel") return 7.00\n' +
+        '    else if (item == "sanduíche") return 12.00\n' +
+        '    else if (item == "suco") return 5.00\n' +
+        '    else if (item == "água") return 3.00\n' +
+        '    else return 0\n}\n\n' +
+        'function totalDoPedido(preco, quantidade) {\n    return preco * quantidade\n}\n\n' +
+        'function troco(valorPago, total) {\n    return valorPago - total\n}\n\n' +
+        'let preco = precoDoLanche("coxinha")\n' +
+        'let total = totalDoPedido(preco, 3)\n' +
+        'console.log(`Total: R$ ${total.toFixed(2)}`)\n' +
+        'console.log(`Troco: R$ ${troco(50, total).toFixed(2)}`)',
+    nos:['precoDoLanche(item)','totalDoPedido(preco, quantidade)','troco(valorPago, total)'],
+    campos:[{id:'item', rot:'item', tipo:'select', val:'coxinha', opcoes:['coxinha','pastel','sanduíche','suco','água']},
+            {id:'qtd', rot:'quantidade', tipo:'number', val:3, passo:1},
+            {id:'pago', rot:'valor pago (R$)', tipo:'number', val:50, passo:1}],
+    exec:function(v){
+      function precoDoLanche(item){
+        if (item == "coxinha") return 6.50
+        else if (item == "pastel") return 7.00
+        else if (item == "sanduíche") return 12.00
+        else if (item == "suco") return 5.00
+        else if (item == "água") return 3.00
+        else return 0
+      }
+      var p = precoDoLanche(v.item)
+      var q = Number(v.qtd)||0
+      var total = p * q
+      var pago = Number(v.pago)||0
+      var tr = pago - total
+      return [
+        {no:0, txt:'precoDoLanche("' + v.item + '") ➜ ' + reais(p)},
+        {no:1, txt:'totalDoPedido(' + p.toFixed(2) + ', ' + q + ') ➜ ' + reais(total)},
+        {no:2, txt:'troco(' + pago.toFixed(2) + ', ' + total.toFixed(2) + ') ➜ ' + reais(tr) +
+          (tr < 0 ? '  😬 faltou dinheiro!' : '')}
+      ]
+    }
+  },
+  {
+    id:'E3', titulo:'🎲 Jogo de dados',
+    desc:'Junta uma função SEM parâmetro (o dado, que sorteia) com uma COM parâmetro (o juiz, que decide).',
+    cod:'function sortearDado() {\n    return Math.floor(Math.random() * 6) + 1\n}\n\n' +
+        'function vencedor(jogador1, jogador2) {\n' +
+        '    if (jogador1 > jogador2) return "🏆 Jogador 1 venceu"\n' +
+        '    else if (jogador2 > jogador1) return "🏆 Jogador 2 venceu"\n' +
+        '    else return "🤝 Empate"\n}\n\n' +
+        'let d1 = sortearDado()\n' +
+        'let d2 = sortearDado()\n' +
+        'console.log(`Jogador 1 tirou ${d1} e Jogador 2 tirou ${d2}`)\n' +
+        'console.log(vencedor(d1, d2))',
+    nos:['sortearDado()','vencedor(jogador1, jogador2)'],
+    campos:[],
+    exec:function(){
+      function sortearDado(){ return Math.floor(Math.random() * 6) + 1 }
+      function vencedor(a, b){
+        if (a > b) return "🏆 Jogador 1 venceu"
+        else if (b > a) return "🏆 Jogador 2 venceu"
+        else return "🤝 Empate"
+      }
+      var d1 = sortearDado(), d2 = sortearDado()
+      return [
+        {no:0, txt:'sortearDado() ➜ Jogador 1 tirou 🎲 ' + d1},
+        {no:0, txt:'sortearDado() ➜ Jogador 2 tirou 🎲 ' + d2},
+        {no:1, txt:'vencedor(' + d1 + ', ' + d2 + ') ➜ ' + vencedor(d1, d2)}
+      ]
+    }
+  },
+  {
+    id:'E4', titulo:'🚿 Pegada ecológica da turma',
+    desc:'Uma função chama a outra DUAS vezes para descobrir quanta água você economiza tomando banhos mais curtos.',
+    cod:'function litrosPorBanho(minutos) {\n    return minutos * 9\n}\n\n' +
+        'function economia(minutosAntes, minutosDepois) {\n' +
+        '    return litrosPorBanho(minutosAntes) - litrosPorBanho(minutosDepois)\n}\n\n' +
+        'console.log(`Antes: ${litrosPorBanho(15)} litros`)\n' +
+        'console.log(`Depois: ${litrosPorBanho(8)} litros`)\n' +
+        'console.log(`Economia por banho: ${economia(15, 8)} litros 💧`)',
+    nos:['economia(antes, depois)','litrosPorBanho(minutos)'],
+    campos:[{id:'antes', rot:'banho antes (min)', tipo:'number', val:15, passo:1},
+            {id:'depois', rot:'banho depois (min)', tipo:'number', val:8, passo:1}],
+    exec:function(v){
+      function litrosPorBanho(m){ return m * 9 }
+      var a = Number(v.antes)||0, d = Number(v.depois)||0
+      var ec = litrosPorBanho(a) - litrosPorBanho(d)
+      return [
+        {no:0, txt:'chamando economia(' + a + ', ' + d + ')'},
+        {no:1, txt:'litrosPorBanho(' + a + ') ➜ ' + litrosPorBanho(a) + ' litros'},
+        {no:1, txt:'litrosPorBanho(' + d + ') ➜ ' + litrosPorBanho(d) + ' litros'},
+        {no:0, txt:'economia devolve ➜ ' + ec + ' litros por banho 💧'},
+        {no:-1, txt:'Em 30 dias isso dá ' + (ec * 30) + ' litros! 🌎'}
+      ]
+    }
+  }
+]
+;(function(){
+  var alvo = $('listaProjetos')
+  PROJETOS.forEach(function(pj){
+    var div = criar('div', {class:'cartao'})
+    var htmlCampos = pj.campos.map(function(c){
+      if (c.tipo === 'select'){
+        return '<label class="campo">' + c.rot + ' <select data-k="' + c.id + '" aria-label="' + c.rot + '">' +
+          c.opcoes.map(function(o){ return '<option' + (o === c.val ? ' selected' : '') + '>' + o + '</option>' }).join('') +
+          '</select></label>'
+      }
+      return '<label class="campo">' + c.rot + ' <input type="' + c.tipo + '" data-k="' + c.id + '"' +
+        (c.tipo === 'number' ? ' step="' + (c.passo || 'any') + '"' : '') +
+        ' value="' + c.val + '" aria-label="' + c.rot + '"></label>'
+    }).join('')
+    var htmlNos = pj.nos.map(function(n, i){
+      return (i ? '<span class="no-seta">➜</span>' : '') + '<span class="no-func" data-no="' + i + '">' + escapar(n) + '</span>'
+    }).join('')
+
+    div.innerHTML =
+      '<span class="etiqueta">' + pj.id + '</span>' +
+      '<h3>' + pj.titulo + '</h3>' +
+      '<p style="font-size:.9rem">' + pj.desc + '</p>' +
+      '<pre class="codigo">' + escapar(pj.cod) + '</pre>' +
+      '<p style="font-size:.8rem;color:var(--txt2);margin:.4rem 0 .1rem">Quem chama quem:</p>' +
+      '<div class="diagrama">' + htmlNos + '</div>' +
+      (htmlCampos ? '<div class="entradas">' + htmlCampos + '</div>' : '') +
+      '<div class="linha-btns">' +
+        '<button class="btn pq" type="button" data-a="rodar">▶ Executar passo a passo</button>' +
+        '<button class="btn sec pq" type="button" data-a="limpar">Limpar</button>' +
+      '</div>' +
+      '<div class="console" aria-live="polite"></div>'
+
+    var cons = div.querySelector('.console')
+    var nosEl = div.querySelectorAll('.no-func')
+    var timers = []
+
+    function apagarNos(){ Array.prototype.forEach.call(nosEl, function(n){ n.classList.remove('aceso') }) }
+    function limparTimers(){ timers.forEach(clearTimeout); timers = [] }
+
+    div.querySelector('[data-a="rodar"]').addEventListener('click', function(){
+      limparTimers(); apagarNos(); limparConsole(cons)
+      var v = {}
+      Array.prototype.forEach.call(div.querySelectorAll('[data-k]'), function(el){ v[el.getAttribute('data-k')] = el.value })
+      var passos
+      try { passos = pj.exec(v) } catch(e){ escreverConsole(cons, '💥 ' + e.message, 'err'); return }
+      passos.forEach(function(p, i){
+        timers.push(setTimeout(function(){
+          apagarNos()
+          if (p.no >= 0 && nosEl[p.no]) nosEl[p.no].classList.add('aceso')
+          escreverConsole(cons, p.txt)
+          if (i === passos.length - 1) timers.push(setTimeout(apagarNos, 900))
+        }, i * 750))
+      })
+    })
+    div.querySelector('[data-a="limpar"]').addEventListener('click', function(){
+      limparTimers(); apagarNos(); limparConsole(cons)
+    })
+    alvo.appendChild(div)
+  })
+})()
+
+/* ============================================================
+   GALERIA DE ERROS — "o que acontece se…"
+   ============================================================ */
+var ERROS = [
+  {
+    n:1, titulo:'Esquecer o <code>return</code>',
+    errado:'function dobro(n) {\n    n * 2          // calculou e jogou fora!\n}\n\nconsole.log(dobro(5))',
+    saidaE:'undefined',
+    porque:'A função até faz a conta, mas não <b>devolve</b> nada. Toda função sem <code>return</code> entrega <code>undefined</code>.',
+    certo:'function dobro(n) {\n    return n * 2\n}\n\nconsole.log(dobro(5))',
+    saidaC:'10',
+    conserto:'Basta colocar <code>return</code> antes da expressão.'
+  },
+  {
+    n:2, titulo:'Chamar a função <b>sem os parênteses</b>',
+    errado:'function ifal() {\n    return "Instituto Federal de Alagoas"\n}\n\nconsole.log(ifal)',
+    saidaE:'[Function: ifal]',
+    porque:'Sem os parênteses você só citou o <b>nome</b> da função — o Node mostra a função em si, não o resultado dela.',
+    certo:'console.log(ifal())',
+    saidaC:'Instituto Federal de Alagoas',
+    conserto:'Os parênteses são o botão de ligar: <code>ifal()</code>.'
+  },
+  {
+    n:3, titulo:'Trocar a <b>ordem</b> dos argumentos',
+    errado:'function dividirConta(total, pessoas) {\n    return total / pessoas\n}\n\nconsole.log(dividirConta(4, 200))',
+    saidaE:'0.02',
+    porque:'O 4 virou o <code>total</code> e o 200 virou <code>pessoas</code>. Deu R$ 0,02 por pessoa — e <b>nenhum erro apareceu</b>.',
+    certo:'console.log(dividirConta(200, 4))',
+    saidaC:'50',
+    conserto:'Mande os argumentos na mesma ordem dos parâmetros. Na dúvida, olhe a definição da função.'
+  },
+  {
+    n:4, titulo:'Esquecer um argumento',
+    errado:'function somar(a, b) {\n    return a + b\n}\n\nconsole.log(somar(5))',
+    saidaE:'NaN',
+    porque:'Como você não mandou o segundo argumento, <code>b</code> ficou <code>undefined</code>. E <code>5 + undefined</code> dá <code>NaN</code> ("não é um número").',
+    certo:'console.log(somar(5, 3))',
+    saidaC:'8',
+    conserto:'Conte quantos parâmetros a função tem e mande a mesma quantidade de argumentos.'
+  },
+  {
+    n:5, titulo:'Mandar argumento <b>sobrando</b>',
+    errado:'function somar(a, b) {\n    return a + b\n}\n\nconsole.log(somar(1, 2, 3))',
+    saidaE:'3',
+    porque:'O <code>3</code> foi simplesmente <b>ignorado</b>: a função só tem duas "bocas". Não dá erro, mas o resultado não é o que você imaginava.',
+    certo:'function somar(a, b, c) {\n    return a + b + c\n}\n\nconsole.log(somar(1, 2, 3))',
+    saidaC:'6',
+    conserto:'Se você precisa de três valores, a função precisa de três parâmetros.'
+  },
+  {
+    n:6, titulo:'Usar uma variável <b>local</b> fora da função',
+    errado:'function calcular(preco) {\n    let imposto = preco * 0.1\n    return preco + imposto\n}\n\nconsole.log(calcular(100))\nconsole.log(imposto)',
+    saidaE:'110\nReferenceError: imposto is not defined',
+    porque:'<code>imposto</code> nasceu dentro da função — é <b>local</b> e morre quando a função acaba. Fora dela, esse nome não existe.',
+    certo:'function calcular(preco) {\n    let imposto = preco * 0.1\n    return imposto        // devolve o que você quer usar\n}\n\nlet imposto = calcular(100)\nconsole.log(imposto)',
+    saidaC:'10',
+    conserto:'Se você precisa do valor lá fora, <b>devolva</b> ele com <code>return</code>.'
+  },
+  {
+    n:7, titulo:'Nome do parâmetro ≠ nome usado no corpo',
+    errado:'function areaCirculo(raio) {\n    return Math.PI * r ** 2     // "r" não existe!\n}\n\nconsole.log(areaCirculo(6))',
+    saidaE:'ReferenceError: r is not defined',
+    porque:'O parâmetro se chama <code>raio</code>, mas o corpo usou <code>r</code>. Para o JavaScript são nomes completamente diferentes.',
+    certo:'function areaCirculo(raio) {\n    return Math.PI * raio ** 2\n}\n\nconsole.log(areaCirculo(6))',
+    saidaC:'113.09733552923255',
+    conserto:'Escreva o parâmetro exatamente igual dentro do corpo — inclusive maiúsculas e minúsculas.'
+  },
+  {
+    n:8, titulo:'Texto onde se esperava número',
+    errado:'function somar(a, b) {\n    return a + b\n}\n\nconsole.log(somar("2", 3))',
+    saidaE:'23',
+    porque:'O <code>+</code> com texto vira <b>concatenação</b>: "2" grudou com 3 e formou "23". Acontece muito com valores vindos do <code>prompt()</code>, que sempre devolve texto.',
+    certo:'let entrada = "2"\nconsole.log(somar(Number(entrada), 3))',
+    saidaC:'5',
+    conserto:'Converta com <code>Number(...)</code> antes de fazer contas.'
+  }
+]
+;(function(){
+  var alvo = $('galeriaErros')
+  ERROS.forEach(function(e){
+    var div = criar('div', {class:'vira'})
+    div.innerHTML =
+      '<div class="vira-int">' +
+        '<div class="vira-face vira-frente">' +
+          '<h4 style="color:var(--erro)">❌ ' + e.n + '. ' + e.titulo + '</h4>' +
+          '<pre class="codigo">' + escapar(e.errado) + '</pre>' +
+          '<p style="font-size:.75rem;color:var(--txt2);margin:.2rem 0">O Node mostra:</p>' +
+          '<div class="saida-node">' + escapar(e.saidaE) + '</div>' +
+          '<p class="porque">' + e.porque + '</p>' +
+          '<button class="btn pq rs" type="button">Ver o conserto ➜</button>' +
+        '</div>' +
+        '<div class="vira-face vira-tras">' +
+          '<h4 style="color:var(--certo)">✅ ' + e.n + '. Como consertar</h4>' +
+          '<pre class="codigo">' + escapar(e.certo) + '</pre>' +
+          '<p style="font-size:.75rem;color:var(--txt2);margin:.2rem 0">Agora o Node mostra:</p>' +
+          '<div class="saida-node">' + escapar(e.saidaC) + '</div>' +
+          '<p class="porque">' + e.conserto + '</p>' +
+          '<button class="btn pq ac" type="button">⬅ Voltar ao erro</button>' +
+        '</div>' +
+      '</div>'
+    Array.prototype.forEach.call(div.querySelectorAll('button'), function(b){
+      b.addEventListener('click', function(ev){
+        ev.stopPropagation()
+        div.classList.toggle('virado')
+      })
+    })
+    alvo.appendChild(div)
+  })
+  $('btnVirarTodos').addEventListener('click', function(){
+    var algumFrente = !!alvo.querySelector('.vira:not(.virado)')
+    Array.prototype.forEach.call(alvo.children, function(c){ c.classList.toggle('virado', algumFrente) })
+  })
+})()
+
+/* ============================================================
+   SEÇÃO 9 — PLAYGROUND
+   ============================================================ */
+var EXEMPLOS_PLAY = [
+  {rot:'🏫 ifal()', cod: COD_SEM.ifal},
+  {rot:'➖ linha()', cod: COD_SEM.linha},
+  {rot:'🎲 sortearDado()', cod:'function sortearDado() {\n    return Math.floor(Math.random() * 6) + 1\n}\n\nfor (let i = 1; i <= 5; i++) {\n    console.log("Rodada " + i + ": 🎲 " + sortearDado())\n}'},
+  {rot:'👋 saudar(nome)', cod:'function saudar(nome) {\n    return `Bom dia, ${nome}!`\n}\n\nconsole.log(saudar("turma 911C"))\nconsole.log(saudar("professor Augusto"))'},
+  {rot:'➕ somar(a, b)', cod:'function somar(a, b) {\n    return a + b\n}\n\nconsole.log(somar(4, 6))\nconsole.log(somar(somar(1, 2), 10))'},
+  {rot:'📊 media(n1..n4)', cod:'function media(n1, n2, n3, n4) {\n    return (n1 + n2 + n3 + n4) / 4\n}\n\nconsole.log("média:", media(6, 7, 8, 9))'},
+  {rot:'⭕ areaCirculo(raio)', cod:'function areaCirculo(raio) {\n    return Math.PI * raio ** 2\n}\n\nconsole.log("A área do círculo com raio = 6 é", areaCirculo(6))'},
+  {rot:'🌡️ celsiusParaFahrenheit(c)', cod:'function celsiusParaFahrenheit(c) {\n    return c * 9 / 5 + 32\n}\n\nconsole.log(celsiusParaFahrenheit(0))\nconsole.log(celsiusParaFahrenheit(30))\nconsole.log(celsiusParaFahrenheit(100))'},
+  {rot:'🏷️ precoComDesconto()', cod:'function precoComDesconto(preco, desconto) {\n    return preco - preco * desconto / 100\n}\n\nconsole.log(precoComDesconto(250, 20))\nconsole.log(precoComDesconto(99.9, 10))'},
+  {rot:'⚖️ IMC + analisarIMC', cod:'function IMC(peso, altura) {\n    return peso / altura ** 2\n}\n\nfunction analisarIMC(imc) {\n    if (imc < 18.5)\n        return "🔵BAIXO PESO"\n    else if (imc < 24.9)\n        return "🟢PESO NORMAL"\n    else if (imc < 29.9)\n        return "🟡SOBREPESO"\n    else if (imc < 35)\n        return "🟠OBESIDADE"\n    else\n        return "🟥OBESIDADE EXTREMA"\n}\n\nlet peso = 70\nlet altura = 1.75\nconsole.log("O seu IMC é", IMC(peso, altura))\nconsole.log("Este IMC indica", analisarIMC(IMC(peso, altura)))'},
+  {rot:'🌦️ estacao(dia, mes)', cod:'function estacao(dia, mes){\n    if ((mes == 9 && dia > 21) || mes == 10 || mes == 11 || (mes == 12 && dia < 21))\n        return "💐 PRIMAVERA"\n    if ((mes == 12 && dia >= 21) || mes == 1 || mes == 2 || (mes == 3 && dia < 20))\n        return "☀️ VERÃO"\n    if ((mes == 3 && dia >= 20) || mes == 4 || mes == 5 || (mes == 6 && dia < 21))\n        return "🍂 OUTONO"\n    if ((mes == 6 && dia >= 21) || mes == 7 || mes == 8 || (mes == 9 && dia <= 21))\n        return "☂️ INVERNO"\n}\n\nconsole.log(estacao(25, 12))\nconsole.log(estacao(12, 25))'},
+  {rot:'🧪 classificarPH(ph)', cod:'function classificarPH(ph) {\n    if (ph < 7) {\n        return "ÁCIDA"\n    }\n    else if (ph > 7) {\n        return "BÁSICA"\n    } else\n        return "NEUTRA"\n}\n\nconsole.log("A solução é classificada como", classificarPH(3))\nconsole.log("A solução é classificada como", classificarPH(7))\nconsole.log("A solução é classificada como", classificarPH(11))'},
+  {rot:'🕗 saudacao(hora)', cod:'function saudacao(hora) {\n    if (hora > 4 && hora < 12)\n        return "Bom dia!"\n    else if (hora < 18)\n        return "Boa tarde!"\n    else\n        return "Boa noite!"\n}\n\nconsole.log(saudacao(9))\nconsole.log(saudacao(15))\nconsole.log(saudacao(21))'},
+  {rot:'✖️ tabuada(n)', cod:'function tabuada(n) {\n    for (let i = 1; i <= 10; i++) {\n        console.log(`${n} x ${i} = ${n * i}`)\n    }\n}\n\ntabuada(7)'},
+  {rot:'🪙 caraOuCoroa()', cod:'function caraOuCoroa() {\n    return Math.random() < 0.5 ? "🪙 CARA" : "🪙 COROA"\n}\n\nfor (let i = 1; i <= 6; i++) {\n    console.log(caraOuCoroa())\n}'},
+  {rot:'🔋 nivelDaBateria()', cod:'function nivelDaBateria(porcentagem) {\n    if (porcentagem >= 80) return "🔋 CHEIA"\n    else if (porcentagem >= 40) return "🔋 BOA"\n    else if (porcentagem >= 20) return "🪫 BAIXA"\n    else return "🪫 CRÍTICA — carregue agora!"\n}\n\nconsole.log(nivelDaBateria(95))\nconsole.log(nivelDaBateria(80))\nconsole.log(nivelDaBateria(39))\nconsole.log(nivelDaBateria(19))'},
+  {rot:'📊 barraDeProgresso()', cod:'function barraDeProgresso(percentual) {\n    let cheios = Math.round(percentual / 10)\n    return "█".repeat(cheios) + "░".repeat(10 - cheios) + ` ${percentual}%`\n}\n\nfor (let p = 0; p <= 100; p = p + 20) {\n    console.log(barraDeProgresso(p))\n}'},
+  {rot:'📱 tempoDeTela(min)', cod:'function tempoDeTela(minutos) {\n    let horas = Math.floor(minutos / 60)\n    let resto = minutos % 60\n    return `${horas}h${resto}min de tela hoje`\n}\n\nconsole.log(tempoDeTela(195))\nconsole.log(tempoDeTela(45))'},
+  {rot:'📅 ehBissexto(ano)', cod:'function ehBissexto(ano) {\n    return (ano % 4 == 0 && ano % 100 != 0) || ano % 400 == 0\n}\n\nconsole.log(2024, ehBissexto(2024))\nconsole.log(2023, ehBissexto(2023))\nconsole.log(1900, ehBissexto(1900))\nconsole.log(2000, ehBissexto(2000))'},
+  {rot:'🎓 frequência', cod:'function frequencia(presencas, totalDeAulas) {\n    return presencas / totalDeAulas * 100\n}\n\nfunction aprovadoPorFrequencia(percentual) {\n    return percentual >= 75 ? "✅ APROVADO na frequência" : "❌ REPROVADO por falta"\n}\n\nlet p = frequencia(62, 80)\nconsole.log(`Frequência: ${p.toFixed(1)}%`)\nconsole.log(aprovadoPorFrequencia(p))'},
+  {rot:'📋 Boletim (E1)', cod:'function media(n1, n2, n3) {\n    return (n1 + n2 + n3) / 3\n}\n\nfunction situacao(m) {\n    if (m >= 6) return "✅ APROVADO"\n    else if (m >= 4) return "🟡 RECUPERAÇÃO"\n    else return "❌ REPROVADO"\n}\n\nfunction boletim(nome, n1, n2, n3) {\n    let m = media(n1, n2, n3)\n    return `${nome} — média ${m.toFixed(1)} — ${situacao(m)}`\n}\n\nconsole.log(boletim("Ana", 8, 7, 9))\nconsole.log(boletim("Beto", 5, 4, 6))\nconsole.log(boletim("Caio", 2, 3, 1))'},
+  {rot:'🎲 Jogo de dados (E3)', cod:'function sortearDado() {\n    return Math.floor(Math.random() * 6) + 1\n}\n\nfunction vencedor(jogador1, jogador2) {\n    if (jogador1 > jogador2) return "🏆 Jogador 1 venceu"\n    else if (jogador2 > jogador1) return "🏆 Jogador 2 venceu"\n    else return "🤝 Empate"\n}\n\nlet d1 = sortearDado()\nlet d2 = sortearDado()\nconsole.log(`Jogador 1 tirou ${d1} e Jogador 2 tirou ${d2}`)\nconsole.log(vencedor(d1, d2))'},
+  {rot:'🚿 Pegada ecológica (E4)', cod:'function litrosPorBanho(minutos) {\n    return minutos * 9\n}\n\nfunction economia(minutosAntes, minutosDepois) {\n    return litrosPorBanho(minutosAntes) - litrosPorBanho(minutosDepois)\n}\n\nconsole.log(`Antes: ${litrosPorBanho(15)} litros`)\nconsole.log(`Depois: ${litrosPorBanho(8)} litros`)\nconsole.log(`Economia por banho: ${economia(15, 8)} litros 💧`)\nconsole.log(`Em 30 dias: ${economia(15, 8) * 30} litros 🌎`)'},
+  {rot:'🔁 areaDoQuadrado x4', cod:'// v1 — sem parâmetro, valor fixo\nfunction areaDoQuadrado1() {\n    return 5 * 5\n}\n\n// v2 — com parâmetro\nfunction areaDoQuadrado2(lado) {\n    return lado * lado\n}\n\n// v3 — sem return, só imprime\nfunction areaDoQuadrado3(lado) {\n    console.log(lado * lado)\n}\n\n// v4 — com parâmetro, return e encadeável\nfunction areaDoQuadrado4(lado) {\n    return lado * lado\n}\nfunction classificarArea(area) {\n    return area > 100 ? "GRANDE" : "PEQUENA"\n}\n\nconsole.log("v1:", areaDoQuadrado1())\nconsole.log("v2:", areaDoQuadrado2(12))\nlet x = areaDoQuadrado3(12)\nconsole.log("v3 devolveu:", x)\nconsole.log("v4:", classificarArea(areaDoQuadrado4(12)))'},
+  {rot:'💥 Os 8 erros clássicos', cod:'function somar(a, b) {\n    return a + b\n}\nfunction ifal() {\n    return "Instituto Federal de Alagoas"\n}\nfunction dividirConta(total, pessoas) {\n    return total / pessoas\n}\n\nconsole.log("1) sem return:", (function dobro(n){ n * 2 })(5))\nconsole.log("2) sem parênteses:", ifal)\nconsole.log("3) ordem trocada:", dividirConta(4, 200))\nconsole.log("4) faltou argumento:", somar(5))\nconsole.log("5) argumento sobrando:", somar(1, 2, 3))\nconsole.log("8) texto no lugar de número:", somar("2", 3))'}
+]
+;(function(){
+  var alvo = $('botoesExemplos')
+  EXEMPLOS_PLAY.forEach(function(ex){
+    var b = criar('button', {class:'btn sec pq', type:'button'}, ex.rot)
+    b.addEventListener('click', function(){
+      $('editor').value = ex.cod
+      $('editor').focus()
+    })
+    alvo.appendChild(b)
+  })
+  $('editor').value = EXEMPLOS_PLAY[4].cod
+  $('btnRodar').addEventListener('click', function(){ executar($('editor').value, $('consPlay')) })
+  $('btnLimpar').addEventListener('click', function(){ limparConsole($('consPlay')) })
+  $('btnLimparCod').addEventListener('click', function(){ $('editor').value = ''; $('editor').focus() })
+  $('editor').addEventListener('keydown', function(ev){
+    if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey)){
+      ev.preventDefault()
+      executar($('editor').value, $('consPlay'))
+    }
+    if (ev.key === 'Tab'){
+      ev.preventDefault()
+      var t = ev.target, ini = t.selectionStart, fim = t.selectionEnd
+      t.value = t.value.slice(0, ini) + '    ' + t.value.slice(fim)
+      t.selectionStart = t.selectionEnd = ini + 4
+    }
+  })
+})()
+
+/* ============================================================
+   SEÇÃO 10 — QUIZ
+   ============================================================ */
+var PERGUNTAS = [
+  {
+    q: 'Você escreve <code>console.log(ifal)</code>, <b>sem os parênteses</b>. O que acontece?',
+    alts: [
+      'Imprime "Instituto Federal de Alagoas" normalmente.',
+      'Imprime a função inteira, porque sem os parênteses ela não é chamada.',
+      'Dá um ReferenceError.',
+      'Imprime undefined.'
+    ],
+    certa: 1,
+    exp: 'Os parênteses são o "botão de ligar" da função. Sem eles você está só falando o <b>nome</b> da função — o JavaScript mostra a função em si. Para executar, precisa de <code>ifal()</code>.'
+  },
+  {
+    q: 'Na definição <code>function somar(a, b) { ... }</code>, o que são <code>a</code> e <code>b</code>?',
+    alts: ['Argumentos', 'Parâmetros', 'Variáveis globais', 'Retornos'],
+    certa: 1,
+    exp: 'Na <b>definição</b> são <b>parâmetros</b> (os nomes). Na <b>chamada</b>, os valores que você manda são os <b>argumentos</b>. Dica para lembrar: <b>P</b>arâmetro na <b>P</b>rimeira linha (definição).'
+  },
+  {
+    q: 'Na chamada <code>somar(4, 6)</code>, os valores <code>4</code> e <code>6</code> são chamados de:',
+    alts: ['Parâmetros', 'Argumentos', 'Escopos', 'Retornos'],
+    certa: 1,
+    exp: 'Valores de verdade enviados na chamada são <b>argumentos</b>. O 4 entra no parâmetro <code>a</code> e o 6 no parâmetro <code>b</code> — nessa ordem.'
+  },
+  {
+    q: 'Usando a função <code>estacao(dia, mes)</code> da aula, o que devolve <code>estacao(12, 25)</code>?',
+    alts: ['☀️ VERÃO', '💐 PRIMAVERA', 'undefined', 'Um erro vermelho no terminal'],
+    certa: 2,
+    exp: 'Os argumentos entraram invertidos: <code>dia = 12</code> e <code>mes = 25</code>. Como não existe mês 25, nenhum <code>if</code> ficou verdadeiro, a função chegou ao fim sem <code>return</code> e devolveu <code>undefined</code>. Repare: <b>não dá erro</b>, dá resposta errada em silêncio.'
+  },
+  {
+    q: 'O que esse código imprime?<pre class="codigo">function soma(a, b) {\n    console.log(a + b)\n}\nlet r = soma(2, 3)\nconsole.log(r)</pre>',
+    alts: ['5 e depois 5', '5 e depois undefined', 'undefined e depois 5', 'Dá erro de sintaxe'],
+    certa: 1,
+    exp: 'A função <b>imprime</b> 5 (por causa do <code>console.log</code> lá dentro), mas ela não tem <code>return</code>. Então <code>r</code> recebe <code>undefined</code>, e a segunda linha imprime <code>undefined</code>.'
+  },
+  {
+    q: 'Você criou <code>let imposto = 10</code> <b>dentro</b> de uma função e tentou usar <code>console.log(imposto)</code> fora dela. O que acontece?',
+    alts: ['Imprime 10 normalmente', 'Imprime undefined', 'ReferenceError: imposto is not defined', 'A variável vira global automaticamente'],
+    certa: 2,
+    exp: 'Variável criada dentro da função é <b>local</b>: ela nasce e morre ali. Fora da função esse nome simplesmente não existe, e o JavaScript avisa com <code>ReferenceError</code>.'
+  },
+  {
+    q: 'Com <code>function f(x) { return x + 3 }</code>, quanto vale <code>f(f(1))</code>?',
+    alts: ['4', '7', '8', 'undefined'],
+    certa: 1,
+    exp: 'Resolve de dentro para fora: <code>f(1)</code> = 1 + 3 = <b>4</b>. Depois <code>f(4)</code> = 4 + 3 = <b>7</b>.'
+  },
+  {
+    q: 'Qual dessas funções permite guardar o resultado numa variável, tipo <code>let x = minhaFuncao(2)</code>?',
+    alts: [
+      'A que termina com <code>console.log(resultado)</code>',
+      'A que termina com <code>return resultado</code>',
+      'As duas funcionam igual',
+      'Nenhuma das duas'
+    ],
+    certa: 1,
+    exp: '<code>console.log</code> só <b>mostra</b> na tela; quem <b>devolve</b> um valor para quem chamou é o <code>return</code>. Sem <code>return</code>, a variável recebe <code>undefined</code>.'
+  },
+  {
+    q: 'O que imprime a última linha?<pre class="codigo">function dobrar(n) {\n    n = n * 2\n    return n\n}\nlet valor = 5\ndobrar(valor)\nconsole.log(valor)</pre>',
+    alts: ['10', '5', 'undefined', 'NaN'],
+    certa: 1,
+    exp: 'O parâmetro <code>n</code> é uma <b>cópia local</b> do valor. Mudar <code>n</code> dentro da função não mexe na variável <code>valor</code> lá fora, que continua <b>5</b>.'
+  },
+  {
+    q: 'O que devolve <code>misterio(4)</code>?<pre class="codigo">function misterio(n) {\n    let total = 0\n    for (let i = 1; i &lt;= n; i++) {\n        total = total + i\n    }\n    return total\n}</pre>',
+    alts: ['4', '8', '10', '24'],
+    certa: 2,
+    exp: 'A função soma 1 + 2 + 3 + 4. O <code>total</code> vai valendo 1, 3, 6 e por fim <b>10</b>. É a soma dos números de 1 até n.'
+  }
+]
+;(function(){
+  var respondidas = 0, acertos = 0
+  function montar(){
+    respondidas = 0; acertos = 0
+    var lista = $('quizLista')
+    lista.innerHTML = ''
+    PERGUNTAS.forEach(function(p, idx){
+      var div = criar('div', {class:'quiz-q'})
+      var enun = criar('p', {class:'enunciado'})
+      enun.innerHTML = (idx + 1) + ') ' + p.q
+      div.appendChild(enun)
+      var caixaExp = criar('div', {class:'explica', style:'display:none'})
+      var botoes = []
+      p.alts.forEach(function(texto, i){
+        var b = criar('button', {class:'alt', type:'button'})
+        b.innerHTML = String.fromCharCode(97 + i) + ') ' + texto
+        b.addEventListener('click', function(){
+          if (div.getAttribute('data-feito')) return
+          div.setAttribute('data-feito', '1')
+          respondidas++
+          var certo = (i === p.certa)
+          if (certo) acertos++
+          botoes.forEach(function(o, oi){
+            o.disabled = true
+            if (oi === p.certa) o.classList.add('certa')
+            else if (oi === i) o.classList.add('errada')
+          })
+          caixaExp.style.display = 'block'
+          caixaExp.innerHTML = (certo ? '<b style="color:var(--certo)">✅ Isso aí!</b> ' : '<b style="color:var(--erro)">❌ Quase.</b> A resposta certa é a letra <b>' + String.fromCharCode(97 + p.certa) + '</b>. ') + p.exp
+          attPlacar()
+        })
+        botoes.push(b)
+        div.appendChild(b)
+      })
+      div.appendChild(caixaExp)
+      lista.appendChild(div)
+    })
+    attPlacar()
+  }
+  function attPlacar(){
+    var t = 'Respondidas: ' + respondidas + ' de ' + PERGUNTAS.length + ' · Acertos: ' + acertos
+    if (respondidas === PERGUNTAS.length){
+      if (acertos === PERGUNTAS.length) t += ' · 🏆 Gabaritou!'
+      else if (acertos >= 8) t += ' · 🎉 Mandou muito bem!'
+      else if (acertos >= 6) t += ' · 👍 Bom! Revise os que errou.'
+      else t += ' · 💪 Volte nas seções e tente de novo.'
+    }
+    $('placarTxt').textContent = t
+  }
+  $('btnRefazer').addEventListener('click', function(){
+    montar()
+    $('quizLista').scrollIntoView({behavior:'smooth', block:'start'})
+  })
+  montar()
+})()
+
+/* ============================================================
+   SEÇÃO 11 — EXERCÍCIOS RESOLVIDOS
+   ============================================================ */
+var RESOLVIDOS = [
+  {
+    id:'R1', titulo:'Dobro de um número',
+    enun:'Crie uma função <code>dobro(n)</code> que receba um número e devolva o dobro dele. Teste com 7 e com 12.5.',
+    sol:'// R1 - dobro de um número\n' +
+        '// n é o PARÂMETRO: nasce com o valor que vier na chamada\n' +
+        'function dobro(n) {\n' +
+        '    return n * 2   // devolve o resultado para quem chamou\n' +
+        '}\n\n' +
+        '// 7 e 12.5 são os ARGUMENTOS\n' +
+        'console.log(dobro(7))\n' +
+        'console.log(dobro(12.5))',
+    saida:'14\n25',
+    nota:'Repare que a função <b>não imprime nada</b> — quem imprime é o <code>console.log</code> de fora. Isso deixa a função reaproveitável: dá para usar o dobro numa conta maior.'
+  },
+  {
+    id:'R2', titulo:'O maior entre dois números',
+    enun:'Crie <code>maiorDeDois(a, b)</code> que devolva o maior entre dois números.',
+    sol:'// R2 - o maior entre dois números\n' +
+        'function maiorDeDois(a, b) {\n' +
+        '    if (a > b)\n' +
+        '        return a       // sai da função na hora\n' +
+        '    else\n' +
+        '        return b\n' +
+        '}\n\n' +
+        'console.log(maiorDeDois(10, 4))\n' +
+        'console.log(maiorDeDois(3, 8))\n' +
+        'console.log(maiorDeDois(5, 5))',
+    saida:'10\n8\n5',
+    nota:'Quando <code>a</code> e <code>b</code> são iguais, o <code>if</code> é falso e cai no <code>else</code> — devolve <code>b</code>, que vale o mesmo. Lembre: o <code>return</code> <b>encerra</b> a função imediatamente.'
+  },
+  {
+    id:'R3', titulo:'Cabeçalho da turma (sem parâmetro)',
+    enun:'Crie <code>boasVindas()</code>, <b>sem parâmetro</b>, que devolva o cabeçalho da turma em 3 linhas. Reaproveite a função <code>linha()</code>.',
+    sol:'// R3 - cabeçalho em 3 linhas, sem parâmetro\n' +
+        'function linha() {\n' +
+        '    return "=".repeat(40)\n' +
+        '}\n\n' +
+        'function boasVindas() {\n' +
+        '    // \\n é a quebra de linha\n' +
+        '    return linha() + "\\n" + "   INPR - Turma 911C - Prof. Augusto" + "\\n" + linha()\n' +
+        '}\n\n' +
+        'console.log(boasVindas())',
+    saida:'========================================\n   INPR - Turma 911C - Prof. Augusto\n========================================',
+    nota:'Uma função <b>pode chamar outra</b>: <code>boasVindas()</code> usa <code>linha()</code> duas vezes. Isso é reaproveitamento de código — se você mudar o tamanho da linha, muda em um lugar só.'
+  },
+  {
+    id:'R4', titulo:'Média final + situação (encadeamento)',
+    enun:'Crie <code>mediaFinal(n1, n2)</code> e <code>situacao(media)</code>: aprovado se média ≥ 6, recuperação se ≥ 4, senão reprovado. Depois encadeie as duas.',
+    sol:'// R4 - duas funções que trabalham juntas\n' +
+        'function mediaFinal(n1, n2) {\n' +
+        '    return (n1 + n2) / 2\n' +
+        '}\n\n' +
+        'function situacao(media) {\n' +
+        '    if (media >= 6)\n' +
+        '        return "✅ APROVADO"\n' +
+        '    else if (media >= 4)\n' +
+        '        return "🟡 RECUPERAÇÃO"\n' +
+        '    else\n' +
+        '        return "❌ REPROVADO"\n' +
+        '}\n\n' +
+        '// passo a passo\n' +
+        'let m = mediaFinal(7, 5)\n' +
+        'console.log("média:", m)\n' +
+        'console.log("situação:", situacao(m))\n\n' +
+        '// ENCADEADO: o retorno de uma vira o argumento da outra\n' +
+        'console.log(situacao(mediaFinal(7, 5)))   // média 6\n' +
+        'console.log(situacao(mediaFinal(5, 4)))   // média 4.5\n' +
+        'console.log(situacao(mediaFinal(2, 1)))   // média 1.5',
+    saida:'média: 6\nsituação: ✅ APROVADO\n✅ APROVADO\n🟡 RECUPERAÇÃO\n❌ REPROVADO',
+    nota:'Isso só funciona porque <code>mediaFinal</code> tem <code>return</code>. O JavaScript resolve <b>de dentro para fora</b>: primeiro <code>mediaFinal(7, 5)</code> vira <code>6</code>, e só então <code>situacao(6)</code> é chamada. É a mesma ideia de <code>analisarIMC(IMC(peso, altura))</code>.'
+  },
+  {
+    id:'R5', titulo:'Tabuada (função que só imprime)',
+    enun:'Crie <code>tabuada(n)</code> que imprima as 10 linhas da tabuada de n. Aqui a função <b>não</b> tem <code>return</code> — é de propósito.',
+    sol:'// R5 - função sem return: ela só IMPRIME\n' +
+        'function tabuada(n) {\n' +
+        '    for (let i = 1; i <= 10; i++) {\n' +
+        '        console.log(`${n} x ${i} = ${n * i}`)\n' +
+        '    }\n' +
+        '}\n\n' +
+        'tabuada(7)\n\n' +
+        '// e se a gente tentar guardar o resultado?\n' +
+        'let x = tabuada(2)\n' +
+        'console.log("x vale:", x)',
+    saida:'7 x 1 = 7\n7 x 2 = 14\n... (até 7 x 10 = 70)\n2 x 1 = 2 ... 2 x 10 = 20\nx vale: undefined',
+    nota:'Perfeito para mostrar a diferença: a tabuada <b>aparece</b> na tela, mas a função <b>não devolve</b> nada. Por isso <code>x</code> fica <code>undefined</code>. Se você quisesse a tabuada como texto para usar depois, precisaria montar uma string e dar <code>return</code> nela.'
+  }
+]
+;(function(){
+  var alvo = $('listaResolvidos')
+  RESOLVIDOS.forEach(function(r){
+    var div = criar('div', {class:'cartao'})
+    div.innerHTML =
+      '<span class="etiqueta">' + r.id + '</span>' +
+      '<h3>' + r.titulo + '</h3>' +
+      '<p>' + r.enun + '</p>' +
+      '<div class="linha-btns">' +
+        '<button class="btn sec pq" type="button" data-acao="ver">👁️ Ver solução</button>' +
+        '<button class="btn ac pq" type="button" data-acao="rodar" style="display:none">▶ Executar</button>' +
+      '</div>' +
+      '<div class="solucao" style="display:none">' +
+        '<pre class="codigo">' + escapar(r.sol) + '</pre>' +
+        '<p style="font-size:.8rem;color:var(--txt2);margin:.2rem 0">Saída esperada:</p>' +
+        '<pre class="codigo" style="background:var(--console-bg);color:var(--console-txt)">' + escapar(r.saida) + '</pre>' +
+        '<div class="dica"><p>' + r.nota + '</p></div>' +
+        '<div class="console" aria-live="polite"></div>' +
+      '</div>'
+    var btnVer = div.querySelector('[data-acao="ver"]')
+    var btnRodar = div.querySelector('[data-acao="rodar"]')
+    var caixa = div.querySelector('.solucao')
+    var cons = div.querySelector('.console')
+    btnVer.addEventListener('click', function(){
+      var aberto = caixa.style.display !== 'none'
+      caixa.style.display = aberto ? 'none' : 'block'
+      btnRodar.style.display = aberto ? 'none' : 'inline-block'
+      btnVer.textContent = aberto ? '👁️ Ver solução' : '🙈 Esconder solução'
+    })
+    btnRodar.addEventListener('click', function(){ executar(r.sol, cons) })
+    alvo.appendChild(div)
+  })
+})()
+
+/* ============================================================
+   SEÇÃO 12 — TESTE DE MESA INTERATIVO (T1, T3, T5)
+   ============================================================ */
+var MESAS = [
+  {
+    id:'T1',
+    titulo:'Função chamando ela mesma no argumento',
+    linhas:[
+      'function f(x) {',
+      '    return x + 3',
+      '}',
+      'console.log(f(4))',
+      'console.log(f(f(1)))'
+    ],
+    passos:[
+      {l:3, d:'Linha 4: o JavaScript precisa do valor de <code>f(4)</code> antes de imprimir. Chama a função com o argumento 4.'},
+      {l:0, d:'Entra em <code>f</code>. O parâmetro <b>x recebe 4</b>.'},
+      {l:1, d:'<code>return 4 + 3</code> → a função devolve <b>7</b> e termina.'},
+      {l:3, d:'Volta para a linha 4 com o valor 7. Imprime: <b>7</b>', saida:'7'},
+      {l:4, d:'Linha 5: temos <code>f(f(1))</code>. Resolve de <b>dentro para fora</b> — primeiro <code>f(1)</code>.'},
+      {l:0, d:'Entra em <code>f</code>. O parâmetro <b>x recebe 1</b>.'},
+      {l:1, d:'<code>return 1 + 3</code> → devolve <b>4</b>.'},
+      {l:4, d:'Agora a expressão virou <code>f(4)</code>. Chama <code>f</code> de novo.'},
+      {l:0, d:'Entra em <code>f</code> outra vez. O parâmetro <b>x recebe 4</b>.'},
+      {l:1, d:'<code>return 4 + 3</code> → devolve <b>7</b>.'},
+      {l:4, d:'Imprime: <b>7</b>. Fim do programa.', saida:'7'}
+    ],
+    colunas:['Chamada','x','retorno'],
+    tabela:[
+      ['f(4)', {r:'4'}, {r:'7'}],
+      ['f(1)', {r:'1'}, {r:'4'}],
+      ['f(4) — de novo, dentro de f(f(1))', {r:'4'}, {r:'7'}]
+    ],
+    saidaFinal:'7\n7',
+    pistaGeral:'Lembre: <code>f(x)</code> devolve <code>x + 3</code>, e em <code>f(f(1))</code> resolve-se primeiro o de dentro.'
+  },
+  {
+    id:'T3',
+    titulo:'A função que só imprime',
+    linhas:[
+      'function soma(a, b) {',
+      '    console.log(a + b)',
+      '}',
+      'let r = soma(2, 3)',
+      'console.log(r)'
+    ],
+    passos:[
+      {l:3, d:'Linha 4: para guardar algo em <code>r</code>, o JavaScript precisa chamar <code>soma(2, 3)</code>.'},
+      {l:0, d:'Entra em <code>soma</code>. <b>a recebe 2</b> e <b>b recebe 3</b>.'},
+      {l:1, d:'<code>console.log(2 + 3)</code> → imprime <b>5</b> na tela.', saida:'5'},
+      {l:2, d:'A função chegou ao fim <b>sem <code>return</code></b>. Toda função sem <code>return</code> devolve <code>undefined</code>.'},
+      {l:3, d:'De volta à linha 4: <code>r</code> recebe <b>undefined</b>.'},
+      {l:4, d:'<code>console.log(r)</code> imprime <b>undefined</b>.', saida:'undefined'}
+    ],
+    colunas:['a','b','o que aparece na tela','valor de r'],
+    tabela:[
+      [{r:'2'}, {r:'3'}, {r:'5'}, {r:'undefined'}]
+    ],
+    saidaFinal:'5\nundefined',
+    pistaGeral:'A função <b>imprime</b>, mas não <b>devolve</b>. São coisas diferentes!'
+  },
+  {
+    id:'T5',
+    titulo:'Laço dentro da função',
+    linhas:[
+      'function misterio(n) {',
+      '    let total = 0',
+      '    for (let i = 1; i <= n; i++) {',
+      '        total = total + i',
+      '    }',
+      '    return total',
+      '}',
+      'console.log(misterio(4))'
+    ],
+    passos:[
+      {l:7, d:'Linha 8: chama <code>misterio(4)</code>.'},
+      {l:0, d:'Entra na função. O parâmetro <b>n recebe 4</b>.'},
+      {l:1, d:'Cria a variável local <code>total</code> valendo <b>0</b>.'},
+      {l:2, d:'<code>i = 1</code>. Testa: 1 &lt;= 4? Sim → entra no laço.'},
+      {l:3, d:'<code>total = 0 + 1</code> → <b>total = 1</b>.'},
+      {l:2, d:'<code>i++</code> → i = 2. Testa: 2 &lt;= 4? Sim.'},
+      {l:3, d:'<code>total = 1 + 2</code> → <b>total = 3</b>.'},
+      {l:2, d:'<code>i++</code> → i = 3. Testa: 3 &lt;= 4? Sim.'},
+      {l:3, d:'<code>total = 3 + 3</code> → <b>total = 6</b>.'},
+      {l:2, d:'<code>i++</code> → i = 4. Testa: 4 &lt;= 4? Sim.'},
+      {l:3, d:'<code>total = 6 + 4</code> → <b>total = 10</b>.'},
+      {l:2, d:'<code>i++</code> → i = 5. Testa: 5 &lt;= 4? <b>Não</b> → sai do laço.'},
+      {l:5, d:'<code>return total</code> → devolve <b>10</b>.'},
+      {l:7, d:'Imprime: <b>10</b>.', saida:'10'}
+    ],
+    colunas:['volta do laço','i','total (depois da soma)'],
+    tabela:[
+      ['antes do laço', '—', {r:'0'}],
+      ['1ª', {r:'1'}, {r:'1'}],
+      ['2ª', {r:'2'}, {r:'3'}],
+      ['3ª', {r:'3'}, {r:'6'}],
+      ['4ª', {r:'4'}, {r:'10'}]
+    ],
+    saidaFinal:'10',
+    pistaGeral:'A cada volta, <code>total</code> vira <code>total + i</code>. Some 1 + 2 + 3 + 4.'
+  },
+  {
+    id:'T9',
+    titulo:'Os limites do if/else — nível da bateria',
+    linhas:[
+      'function bateria(p) {',
+      '    if (p >= 80) return "CHEIA"',
+      '    if (p >= 40) return "BOA"',
+      '    if (p >= 20) return "BAIXA"',
+      '    return "CRÍTICA"',
+      '}',
+      'console.log(bateria(80))',
+      'console.log(bateria(39))',
+      'console.log(bateria(19))'
+    ],
+    passos:[
+      {l:6, d:'Linha 7: chama <code>bateria(80)</code>.'},
+      {l:0, d:'Entra na função. O parâmetro <b>p recebe 80</b>.'},
+      {l:1, d:'80 &gt;= 80? <b>SIM</b> — o <code>&gt;=</code> inclui o próprio 80. Devolve <b>"CHEIA"</b> e a função <b>termina aqui</b>.'},
+      {l:6, d:'Imprime: <b>CHEIA</b>', saida:'CHEIA'},
+      {l:7, d:'Linha 8: chama <code>bateria(39)</code>.'},
+      {l:0, d:'Entra de novo. O parâmetro <b>p recebe 39</b>.'},
+      {l:1, d:'39 &gt;= 80? não. Segue para o próximo <code>if</code>.'},
+      {l:2, d:'39 &gt;= 40? <b>não</b> — 39 é menor que 40 por 1 pontinho! Segue.'},
+      {l:3, d:'39 &gt;= 20? <b>SIM</b> → devolve <b>"BAIXA"</b>.'},
+      {l:7, d:'Imprime: <b>BAIXA</b>', saida:'BAIXA'},
+      {l:8, d:'Linha 9: chama <code>bateria(19)</code>.'},
+      {l:0, d:'O parâmetro <b>p recebe 19</b>.'},
+      {l:1, d:'19 &gt;= 80? não.'},
+      {l:2, d:'19 &gt;= 40? não.'},
+      {l:3, d:'19 &gt;= 20? <b>não</b> — 19 é menor que 20.'},
+      {l:4, d:'Nenhum <code>if</code> pegou. Chega no <code>return "CRÍTICA"</code> do final.'},
+      {l:8, d:'Imprime: <b>CRÍTICA</b>', saida:'CRÍTICA'}
+    ],
+    colunas:['Chamada','p','p &gt;= 80?','p &gt;= 40?','p &gt;= 20?','retorno'],
+    tabela:[
+      ['bateria(80)', {r:'80'}, {r:'sim'}, 'nem testou', 'nem testou', {r:'CHEIA'}],
+      ['bateria(39)', {r:'39'}, {r:'não'}, {r:'não'}, {r:'sim'}, {r:'BAIXA'}],
+      ['bateria(19)', {r:'19'}, {r:'não'}, {r:'não'}, {r:'não'}, {r:'CRÍTICA'}]
+    ],
+    saidaFinal:'CHEIA\nBAIXA\nCRÍTICA',
+    pistaGeral:'Responda <b>sim</b> ou <b>não</b>. Cuidado com os limites: <code>&gt;=</code> inclui o número, e quando um <code>return</code> acontece a função para na hora.'
+  }
+]
+;(function(){
+  function normalizar(s){
+    var t = String(s).trim().toLowerCase()
+    if (t.normalize) t = t.normalize('NFD').replace(/[̀-ͯ]/g, '')
+    return t.replace(/\s+/g,'').replace(/"/g,'').replace(/,/g,'.')
+  }
+  var alvo = $('listaMesa')
+
+  MESAS.forEach(function(m){
+    var div = criar('div', {class:'cartao'})
+
+    // código com linhas destacáveis
+    var htmlLinhas = m.linhas.map(function(l, i){
+      return '<span class="linha-cod" data-l="' + i + '">' + String(i+1).padStart(2, ' ') + '  ' + escapar(l) + '</span>'
+    }).join('')
+
+    // tabela
+    var cab = '<tr>' + m.colunas.map(function(c){ return '<th>' + c + '</th>' }).join('') + '</tr>'
+    var corpo = m.tabela.map(function(linha, li){
+      return '<tr>' + linha.map(function(cel, ci){
+        if (typeof cel === 'string') return '<td>' + cel + '</td>'
+        return '<td><input type="text" data-l="' + li + '" data-c="' + ci + '" data-esperado="' + escapar(cel.r) + '" aria-label="valor da linha ' + (li+1) + ' coluna ' + m.colunas[ci] + '"><span class="pista" style="display:none"></span></td>'
+      }).join('') + '</tr>'
+    }).join('')
+
+    div.innerHTML =
+      '<span class="etiqueta">' + m.id + '</span>' +
+      '<h3>' + m.titulo + '</h3>' +
+      '<pre class="codigo" style="line-height:1.7">' + htmlLinhas + '</pre>' +
+      '<h4>1) Preencha a tabela</h4>' +
+      '<div class="rolagem"><table class="tabela"><thead>' + cab + '</thead><tbody>' + corpo + '</tbody></table></div>' +
+      '<label class="campo" style="max-width:320px">Saída final no terminal (uma por linha):' +
+        '<textarea class="saida-final" rows="2" spellcheck="false"></textarea></label>' +
+      '<div class="linha-btns">' +
+        '<button class="btn pq" type="button" data-a="conf">✔ Conferir</button>' +
+        '<button class="btn sec pq" type="button" data-a="lim">Apagar respostas</button>' +
+        '<button class="btn sec pq" type="button" data-a="rev">Revelar respostas</button>' +
+      '</div>' +
+      '<p class="resultado-conf" aria-live="polite"></p>' +
+      '<h4 style="margin-top:1.2rem">2) Veja a execução passo a passo</h4>' +
+      '<div class="passo-desc" aria-live="polite">Clique em <b>Próximo passo</b> para o computador executar linha por linha.</div>' +
+      '<div class="linha-btns">' +
+        '<button class="btn ac pq" type="button" data-a="prox">➜ Próximo passo</button>' +
+        '<button class="btn sec pq" type="button" data-a="rein">↺ Reiniciar</button>' +
+      '</div>' +
+      '<p style="font-size:.8rem;color:var(--txt2);margin:.2rem 0">Terminal:</p>' +
+      '<div class="console cons-passo" aria-live="polite"></div>'
+
+    alvo.appendChild(div)
+
+    var inputs = div.querySelectorAll('.tabela input')
+    var saidaFinalEl = div.querySelector('.saida-final')
+    var resultado = div.querySelector('.resultado-conf')
+    var linhasEl = div.querySelectorAll('.linha-cod')
+    var passoDesc = div.querySelector('.passo-desc')
+    var consPasso = div.querySelector('.cons-passo')
+
+    function conferir(){
+      var certos = 0, total = 0
+      Array.prototype.forEach.call(inputs, function(inp){
+        total++
+        var esperado = normalizar(inp.getAttribute('data-esperado'))
+        var dado = normalizar(inp.value)
+        var pista = inp.nextElementSibling
+        inp.classList.remove('ok','nok')
+        pista.style.display = 'none'
+        if (!dado) return
+        if (dado === esperado){ inp.classList.add('ok'); certos++ }
+        else {
+          inp.classList.add('nok')
+          pista.style.display = 'block'
+          pista.innerHTML = 'Confira essa. ' + m.pistaGeral
+        }
+      })
+      // saída final
+      var sfOk = normalizar(saidaFinalEl.value) === normalizar(m.saidaFinal)
+      saidaFinalEl.classList.remove('ok','nok')
+      if (saidaFinalEl.value.trim()){
+        saidaFinalEl.classList.add(sfOk ? 'ok' : 'nok')
+        saidaFinalEl.style.borderColor = sfOk ? 'var(--certo)' : 'var(--erro)'
+      } else {
+        saidaFinalEl.style.borderColor = ''
+      }
+      resultado.textContent = 'Você acertou ' + certos + ' de ' + total + ' células da tabela' +
+        (saidaFinalEl.value.trim() ? (sfOk ? ' · saída final correta ✅' : ' · saída final ainda não bate ❌') : '') + '.'
+      resultado.style.color = (certos === total && (sfOk || !saidaFinalEl.value.trim())) ? 'var(--certo)' : 'var(--alerta)'
+    }
+
+    div.querySelector('[data-a="conf"]').addEventListener('click', conferir)
+    div.querySelector('[data-a="lim"]').addEventListener('click', function(){
+      Array.prototype.forEach.call(inputs, function(inp){
+        inp.value = ''; inp.classList.remove('ok','nok'); inp.nextElementSibling.style.display = 'none'
+      })
+      saidaFinalEl.value = ''; saidaFinalEl.style.borderColor = ''
+      resultado.textContent = ''
+    })
+    div.querySelector('[data-a="rev"]').addEventListener('click', function(){
+      Array.prototype.forEach.call(inputs, function(inp){
+        inp.value = inp.getAttribute('data-esperado')
+        inp.classList.remove('nok'); inp.classList.add('ok')
+        inp.nextElementSibling.style.display = 'none'
+      })
+      saidaFinalEl.value = m.saidaFinal
+      saidaFinalEl.style.borderColor = 'var(--certo)'
+      resultado.textContent = 'Respostas reveladas — agora refaça sozinho para valer! 😉'
+      resultado.style.color = 'var(--txt2)'
+    })
+
+    // passo a passo
+    var passoAtual = -1
+    function pintar(){
+      Array.prototype.forEach.call(linhasEl, function(l){ l.classList.remove('atual') })
+      if (passoAtual >= 0 && passoAtual < m.passos.length){
+        var p = m.passos[passoAtual]
+        var el = div.querySelector('.linha-cod[data-l="' + p.l + '"]')
+        if (el) el.classList.add('atual')
+        passoDesc.innerHTML = '<b>Passo ' + (passoAtual+1) + '/' + m.passos.length + ':</b> ' + p.d
+      }
+    }
+    function reiniciar(){
+      passoAtual = -1
+      limparConsole(consPasso)
+      Array.prototype.forEach.call(linhasEl, function(l){ l.classList.remove('atual') })
+      passoDesc.innerHTML = 'Clique em <b>Próximo passo</b> para o computador executar linha por linha.'
+    }
+    div.querySelector('[data-a="prox"]').addEventListener('click', function(){
+      if (passoAtual >= m.passos.length - 1){
+        passoDesc.innerHTML = '🏁 <b>Fim!</b> A saída completa está no terminal aí embaixo. Clique em <b>Reiniciar</b> para ver de novo.'
+        return
+      }
+      passoAtual++
+      pintar()
+      var p = m.passos[passoAtual]
+      if (p.saida !== undefined) escreverConsole(consPasso, p.saida)
+    })
+    div.querySelector('[data-a="rein"]').addEventListener('click', reiniciar)
+  })
+})()
+
+/* ============================================================
+   SEÇÃO 13 — IMPRIMIR
+   ============================================================ */
+$('btnImprimir').addEventListener('click', function(){ window.print() })
+
+/* ============================================================
+   ATALHOS DE TECLADO ENTRE SEÇÕES
+   ============================================================ */
+document.addEventListener('keydown', function(ev){
+  if (ev.target && /INPUT|TEXTAREA|SELECT/.test(ev.target.tagName)) return
+  if (!ev.altKey) return
+  var atual = SECOES.findIndex(function(s){ return s.classList.contains('ativa') })
+  if (ev.key === 'ArrowRight' && atual < SECOES.length - 1){ ev.preventDefault(); irPara(SECOES[atual+1].id) }
+  if (ev.key === 'ArrowLeft' && atual > 0){ ev.preventDefault(); irPara(SECOES[atual-1].id) }
+})
+</script>
+</body>
+</html>
