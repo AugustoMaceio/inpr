@@ -6,6 +6,7 @@ Este repositório reúne exercícios de introdução à programação em JavaScr
 
 - `repeticao/README.md` — Aula de estruturas de repetição em JavaScript
 - `funcoes/README.md` — Aula de definição e chamada de funções em JavaScript
+- `devsecops/README.md` — Aula de DevSecOps: segurança integrada ao ciclo de desenvolvimento
 
 ## Como usar
 
