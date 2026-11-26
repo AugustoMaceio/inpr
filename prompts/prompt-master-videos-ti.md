@@ -38,7 +38,7 @@ Antes de gerar qualquer roteiro, faça as perguntas abaixo em uma única mensage
 7. **Público-alvo e nível**: iniciante | intermediário | avançado; contexto (ensino médio técnico, graduação, profissionais, gestores). [graduação, iniciante]
 8. **Formato e duração**: short vertical 9:16 (30-90 s) | vídeo horizontal 16:9 (3-6 min) | vídeo longo (8-15 min) | série de episódios. [short 60 s]
 9. **Estilo visual**: 2D flat/motion design | 2D quadro branco | diagramas animados técnicos | 3D isométrico | 3D cinematográfico | misto. [eu recomendo conforme o tema]
-10. **Ferramenta de produção** (para eu gerar os prompts no formato certo): CapCut/Canva | After Effects | Manim | Remotion | Blender | Runway/Kling/Veo/Sora (IA de vídeo) | não sei. [não sei]
+10. **Ferramenta de produção** (para eu gerar os prompts no formato certo): **sem ferramentas externas (você gera o vídeo em código, pronto para abrir no navegador)** | CapCut/Canva | After Effects | Manim | Remotion | Blender | Runway/Kling/Veo/Sora (IA de vídeo) | não sei. [não sei]
 11. **Idioma e tom da narração**: [português do Brasil, tom próximo e direto, sem gírias forçadas]
 12. **Restrições**: marca, cores, mascote, termos que devem ou não aparecer, referências de vídeos que você gosta. [nenhuma]
 
@@ -109,12 +109,30 @@ Biblioteca de metáforas por área (use ou adapte):
 
 Conforme a ferramenta informada:
 
+- **Sem ferramentas externas**: siga a seção "MODO SEM FERRAMENTAS EXTERNAS" abaixo e entregue o vídeo pronto como código.
 - **IA de vídeo (Runway, Kling, Veo, Sora etc.)**: um prompt em inglês por cena, com: sujeito, ação, estilo visual, câmera, iluminação, paleta, duração, proporção (9:16 ou 16:9) e "no text" quando o texto será adicionado na edição.
 - **IA de imagem (para quadros-chave)**: um prompt por quadro-chave, mesmo estilo e paleta.
 - **Manim / Remotion**: esqueleto de código das cenas principais, com comentários.
 - **After Effects / Blender**: lista de assets, camadas, animações-chave (keyframes) e movimentos de câmera.
 - **CapCut / Canva**: lista de elementos, ordem dos clipes, efeitos e sincronização com a narração.
 - **Não sei**: recomende a ferramenta mais simples que atinja o estilo e explique por quê em 2 linhas.
+
+## MODO SEM FERRAMENTAS EXTERNAS
+
+Quando o usuário escolher esta opção, você mesmo produz o vídeo, sem depender de editores, bancos de imagens ou IAs de vídeo:
+
+1. Gere **um único arquivo HTML autocontido** (HTML + CSS + JavaScript puro, sem bibliotecas, sem CDN, sem imagens externas). Todo o visual é feito com **SVG, CSS e Canvas**.
+2. **Animação**:
+   - 2D: formas SVG, transições e keyframes CSS, setas que se desenham (`stroke-dasharray`), pacotes de dados que percorrem caminhos.
+   - 3D: CSS 3D (`perspective`, `transform-style: preserve-3d`, `rotateX/Y`) para cubos, servidores e cenas isométricas; ou projeção 3D simples em Canvas escrita à mão.
+3. **Linha do tempo**: um array de cenas em JavaScript (`{ inicio, duracao, narracao, legenda, desenhar }`) controla tudo, seguindo exatamente o storyboard da Etapa 4.
+4. **Narração**: use a Web Speech API do navegador (`speechSynthesis`, voz `pt-BR`), sincronizada com as cenas. Se não houver voz disponível, o vídeo continua com legendas.
+5. **Legendas** dinâmicas na tela, com a palavra-chave destacada.
+6. **Proporção** fixa conforme o formato (1080x1920 para 9:16 ou 1920x1080 para 16:9), escalada para caber na janela.
+7. **Controles**: botões Reproduzir, Pausar e Reiniciar; tecla espaço pausa.
+8. **Exportação sem programas extras**: inclua um botão "Gravar vídeo" que usa `canvas.captureStream()` ou a captura de aba (`getDisplayMedia`) com `MediaRecorder` para baixar um arquivo `.webm`. Explique também a alternativa de gravar a tela com o recurso nativo do sistema (Windows: Win+Alt+R ou Ferramenta de Captura; macOS: Cmd+Shift+5).
+9. Entregue o código completo em um bloco, seguido de instruções em 3 passos: salvar como `video.html`, abrir no navegador, reproduzir ou gravar.
+10. Mantenha o código legível e comentado por cena, para o usuário editar textos, cores e tempos.
 
 Inclua também um **prompt de narração** para síntese de voz (TTS), com marcação de pausas e ênfases.
 
@@ -177,4 +195,5 @@ Comece agora pela ETAPA 1: faça as perguntas.
 
 - **Série de episódios**: acrescente ao final da entrevista "Divida em N episódios, cada um com um conceito central e um gancho para o próximo".
 - **Gestão e governança**: no item 6, escolha "política/processo organizacional". O vídeo então mostra a construção da política (diagnóstico, objetivos, papéis, controles, indicadores) em vez de código.
+- **Sem ferramentas externas**: no item 10, responda "sem ferramentas externas". O assistente entrega um arquivo HTML que já é o vídeo animado, com narração do navegador e botão para gravar em `.webm`.
 - **Aula expositiva**: peça "versão de 10 minutos para sala de aula, com 2 pausas para perguntas aos alunos".
