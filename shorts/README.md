@@ -74,6 +74,10 @@ node shorts/codigo/tarefas.js
 node shorts/codigo/quiz.js
 ```
 
+## Outros shorts
+
+- [`black-friday-api-java/`](black-friday-api-java/README.md) — API REST com Java na Black Friday (DNS, TCP, latência, cache e filas), com o vídeo pronto em HTML
+
 ## Próximos roteiros sugeridos
 
 1. Conversor de temperatura
